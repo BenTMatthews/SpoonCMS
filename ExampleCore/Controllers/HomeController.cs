@@ -4,14 +4,27 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Example.Models;
+using ExampleCore.Models;
+using SpoonCMS.Classes;
 
-namespace Example.Controllers
+namespace ExampleCore.Controllers
 {
     public class HomeController : Controller
     {
         public IActionResult Index()
         {
+            SpoonCMS.Workers.SpoonDataWorker worker = new SpoonCMS.Workers.SpoonDataWorker();
+
+            Container container = new Container("test");
+
+            container.AddItem(new ContentItem("test item") { Active = true, Value = "this is some HTML" });
+
+            //worker.AddContainer(container);
+
+            var containers = worker.GetAllContainers();
+
+            var container2 = worker.GetContainer("test");
+
             return View();
         }
 

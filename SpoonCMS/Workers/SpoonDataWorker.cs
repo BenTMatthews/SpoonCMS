@@ -4,6 +4,7 @@ using SpoonCMS.DataClasses;
 using SpoonCMS.Exceptions;
 using SpoonCMS.Interfaces;
 using System;
+using System.Collections.Generic;
 
 namespace SpoonCMS.Workers
 {
@@ -17,6 +18,11 @@ namespace SpoonCMS.Workers
             data = new LiteDBData();
         }
 
+        public SpoonDataWorker(string connString)
+        {
+            data = new LiteDBData(connString);
+        }
+
         //public Spoon(DBSettings settings)
         //{
 
@@ -25,7 +31,7 @@ namespace SpoonCMS.Workers
         #endregion
 
         #region DataOperations
-        
+
         public void AddContainer(Container con)
         {
             data.AddContainer(con);
@@ -67,6 +73,11 @@ namespace SpoonCMS.Workers
         public Container GetContainer(string conName)
         {
             return data.GetContainer(conName);
+        }
+
+        public List<ContainerSkinny> GetAllContainers()
+        {
+            return data.GetAllContainers();
         }
 
         #endregion

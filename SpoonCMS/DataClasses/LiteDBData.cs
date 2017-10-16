@@ -11,7 +11,7 @@ namespace SpoonCMS.DataClasses
     class LiteDBData : ISpoonData
     {
 
-        public string ConnString { get; set; } = @"\Data\DB";
+        public string ConnString { get; set; } = @"Data\DB\SpoonData.db";
 
         public LiteDBData()
         {
@@ -40,6 +40,30 @@ namespace SpoonCMS.DataClasses
                 throw ex;
             }
         }
+
+        public List<ContainerSkinny> GetAllContainers()
+        {
+            List<ContainerSkinny> retList = new List<ContainerSkinny>();
+            try
+            {
+                using (var db = new LiteDatabase(ConnString))
+                {
+                    var containers = db.GetCollection<Container>("Containers");
+                    
+                    foreach(Container con in containers.FindAll())
+                    {
+                        retList.Add(con.GetSkinny());
+                    }
+                }
+
+                return retList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public void AddContainer(Container container)
         {
             try

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Example
+namespace ExampleCore
 {
     public class Startup
     {
@@ -37,7 +37,7 @@ namespace Example
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.Map("/admin", SpoonCMS.Workers.SpoonWebWorker.BuildAdminPage);
+            app.Map("/admin", SpoonCMS.Workers.SpoonWebWorker.BuildAdminPageDelegate);
 
             app.UseStaticFiles();
 

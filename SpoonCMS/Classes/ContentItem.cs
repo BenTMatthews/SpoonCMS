@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SpoonCMS.Classes
 {
-    class ContentItem : IItem
+    public class ContentItem : IItem
     {
         public int Id { get; set; }
         public string Value { get; set; }
@@ -19,6 +19,11 @@ namespace SpoonCMS.Classes
         {
             get { return this.Value; }
             set { this.Value = (string)value; }
+        }
+
+        public ContentItem()
+        {
+
         }
 
         public ContentItem(string name)

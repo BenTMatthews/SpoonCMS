@@ -10,6 +10,7 @@ namespace SpoonCMS.Interfaces
         string ConnString { get; set; }
 
         Container GetContainer(string conName);
+        List<ContainerSkinny> GetAllContainers();
         void AddContainer(Container container);
         void DeleteContainer(string conName);
         void AddItemToContainer(string conName, IItem item);

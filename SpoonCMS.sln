@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpoonCMS", "SpoonCMS\SpoonCMS.csproj", "{AF5B6286-00D2-4E73-B54F-DCEB1449D64A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpoonCMS", "SpoonCMS\SpoonCMS.csproj", "{AF5B6286-00D2-4E73-B54F-DCEB1449D64A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{1D32B1F4-387F-4901-B535-62277329D003}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleCore", "ExampleCore\ExampleCore.csproj", "{31C67066-DCCF-45A9-9FC3-1EB2A4F5E703}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{AF5B6286-00D2-4E73-B54F-DCEB1449D64A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF5B6286-00D2-4E73-B54F-DCEB1449D64A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF5B6286-00D2-4E73-B54F-DCEB1449D64A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D32B1F4-387F-4901-B535-62277329D003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D32B1F4-387F-4901-B535-62277329D003}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D32B1F4-387F-4901-B535-62277329D003}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D32B1F4-387F-4901-B535-62277329D003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31C67066-DCCF-45A9-9FC3-1EB2A4F5E703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31C67066-DCCF-45A9-9FC3-1EB2A4F5E703}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31C67066-DCCF-45A9-9FC3-1EB2A4F5E703}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31C67066-DCCF-45A9-9FC3-1EB2A4F5E703}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

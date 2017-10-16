@@ -14,8 +14,13 @@ namespace SpoonCMS.Classes
         public int Id { get; set; }
         public Dictionary<string, IItem> Items { get; set; } = new Dictionary<string, IItem>();
         public bool Active { get; set; } = true;
-        private DateTime Created { get; set; } = DateTime.Now;
+        public DateTime Created { get; } = DateTime.Now;
         public String Name { get; set; }
+
+        public Container()
+        {
+
+        }
 
         public Container(string name)
         {
@@ -46,6 +51,17 @@ namespace SpoonCMS.Classes
         public void RemoveItem(string itemName)
         {
             Items.Remove(itemName);
+        }
+
+        public ContainerSkinny GetSkinny()
+        {
+            return new ContainerSkinny
+            {
+                Id = this.Id,
+                Active = this.Active,
+                Created = this.Created,
+                Name = this.Name
+            };
         }
     }
 }

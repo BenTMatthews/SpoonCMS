@@ -22,6 +22,10 @@ namespace SpoonCMS.Classes
             set { this.Value = (Stream)value; }
         }
 
+        public FileItem()
+        {
+
+        }
 
         public FileItem(string name)
         {
