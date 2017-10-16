@@ -37,6 +37,8 @@ namespace Example
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.Map("/admin", SpoonCMS.Workers.SpoonWebWorker.BuildAdminPage);
+
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
@@ -45,6 +47,7 @@ namespace Example
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }

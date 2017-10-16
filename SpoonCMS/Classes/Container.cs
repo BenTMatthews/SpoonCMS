@@ -1,18 +1,51 @@
-﻿using SpoonCMS.Interfaces;
+﻿using SpoonCMS.Exceptions;
+using SpoonCMS.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SpoonCMS.Classes
 {
-    class Container
+    public class Container
     {
+        private const int _maxCount = 100;
+
         public int Id { get; set; }
-        public List<IItem> Items {get; set;}
-        public bool Active { get; set; }
-        public DateTime BeginDate { get; set; }
-        public DateTime EndDate { get; set; }
-        private DateTime Created { get; set; }
+        public Dictionary<string, IItem> Items { get; set; } = new Dictionary<string, IItem>();
+        public bool Active { get; set; } = true;
+        private DateTime Created { get; set; } = DateTime.Now;
         public String Name { get; set; }
+
+        public Container(string name)
+        {
+            Name = name;
+        }
+
+        public void AddItem(IItem item)
+        {
+            try
+            {
+                if(Items.Count >= _maxCount)
+                {
+                    throw new CountExceededException("Containers cannot exceed " + _maxCount + " items");
+                }
+
+                Items.Add(item.Name, item);
+            }
+            catch(ArgumentException ex)
+            {
+                throw ex;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void RemoveItem(string itemName)
+        {
+            Items.Remove(itemName);
+        }
     }
 }

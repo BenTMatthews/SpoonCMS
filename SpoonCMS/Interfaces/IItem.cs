@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SpoonCMS.Interfaces
 {
-    interface IItem
+    public interface IItem
     {
         int Id { get; set; }
         object Value { get; set; }
