@@ -12,7 +12,7 @@ namespace SpoonCMS.Classes
         private const int _maxCount = 100;
 
         public int Id { get; set; }
-        public Dictionary<string, IItem> Items { get; set; } = new Dictionary<string, IItem>();
+        public Dictionary<string, ContentItem> Items { get; set; } = new Dictionary<string, ContentItem>();
         public bool Active { get; set; } = true;
         public DateTime Created { get; } = DateTime.Now;
         public String Name { get; set; }
@@ -27,25 +27,30 @@ namespace SpoonCMS.Classes
             Name = name;
         }
 
-        public void AddItem(IItem item)
+        public void AddItem(ContentItem item)
         {
             try
             {
-                if(Items.Count >= _maxCount)
+                if (Items.Count >= _maxCount)
                 {
                     throw new CountExceededException("Containers cannot exceed " + _maxCount + " items");
                 }
 
                 Items.Add(item.Name, item);
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 throw ex;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
+        }
+
+        public IItem GetItem(string itemName)
+        {
+            return Items[itemName];
         }
 
         public void RemoveItem(string itemName)

@@ -41,6 +41,24 @@ namespace SpoonCMS.DataClasses
             }
         }
 
+        public Container GetContainer(int conId)
+        {
+            try
+            {
+                using (var db = new LiteDatabase(ConnString))
+                {
+                    var containers = db.GetCollection<Container>("Containers");
+                    Container existingCon = containers.FindOne(x => x.Id.Equals(conId));
+
+                    return existingCon;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public List<ContainerSkinny> GetAllContainers()
         {
             List<ContainerSkinny> retList = new List<ContainerSkinny>();
@@ -78,12 +96,42 @@ namespace SpoonCMS.DataClasses
                         containers.Insert(container);
                     }
                     else
-                        throw new NameExistsException("A collection with that name already exists");
+                        throw new NameExistsException("A container with that name already exists");
 
                     containers.EnsureIndex(x => x.Name);
                 }
             }
             catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void UpdateContainer(Container container)
+        {
+            try
+            {
+                using (var db = new LiteDatabase(ConnString))
+                {
+                    var containers = db.GetCollection<Container>("Containers");
+                    var existingCon = containers.FindOne(x => x.Id.Equals(container.Id));
+
+                    if (existingCon == null)
+                    {
+                        throw new ContainerDoesNotExistException("Container with that Id does not exist");
+                    }
+                    else
+                    {
+                        existingCon.Name = container.Name;
+                        existingCon.Active = container.Active;
+                        existingCon.Items = container.Items;
+
+                        containers.Update(container);
+                        containers.EnsureIndex(x => x.Name);
+                    }                    
+                }
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -105,7 +153,7 @@ namespace SpoonCMS.DataClasses
             }
         }
 
-        public void AddItemToContainer(string conName, IItem item)
+        public void AddItemToContainer(string conName, ContentItem item)
         {
             try
             {
@@ -117,12 +165,15 @@ namespace SpoonCMS.DataClasses
 
                     if (container != null)
                     {
-                        if (!container.Items.TryAdd(item.Name, item))
+                        if(!container.Items.ContainsKey(item.Name))
                         {
-                            throw new NameExistsException("An item of that name already exists in this container");
+                            container.Items.Add(item.Name, item);
+                            containers.Update(container);
+                        }    
+                        else
+                        {
+                            throw new NameExistsException("An item with that name already exists");
                         }
-
-                        containers.Update(container);
                     }
                     else
                     {
@@ -136,7 +187,7 @@ namespace SpoonCMS.DataClasses
             }
         }
 
-        public void UpdateItemInContainer(string conName, IItem item)
+        public void UpdateItemInContainer(string conName, ContentItem item)
         {
             try
             {
@@ -202,5 +253,30 @@ namespace SpoonCMS.DataClasses
             }
         }
 
+        public void UpdateContainerName(int conId, string conName)
+        {
+            try
+            {
+                using (var db = new LiteDatabase(ConnString))
+                {
+                    var containers = db.GetCollection<Container>("Containers");
+                    Container container = containers.FindOne(x => x.Id.Equals(conId));
+
+                    if (container != null)
+                    {
+                        container.Name = conName;
+                        containers.Update(container);
+                    }
+                    else
+                    {
+                        throw new ContainerDoesNotExistException("The container Id is not in the database collection");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

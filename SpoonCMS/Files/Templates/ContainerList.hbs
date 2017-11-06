@@ -1,0 +1,10 @@
+﻿<script id="container-list-template" type="text/x-handlebars-template">
+    {{#each this}}
+    <div class="containerItem" data-container-id="{{Id}}">
+        <div class="containerName">{{Name}}</div>
+    </div>
+    {{/each}}
+    <div id="containerListOptions">
+        <button class="addContainer saveButton">Add Container</button>
+    </div>
+</script>

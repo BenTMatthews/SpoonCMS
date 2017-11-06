@@ -1,21 +1,41 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteDB" Version="3.1.4" />
+    <None Remove="Files\Admin.html" />
+    <None Remove="Files\Script.js" />
+    <None Remove="Files\Styles.css" />
+    <None Remove="Files\Templates\ContainerList.hbs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Files\" />
+    <EmbeddedResource Include="Files\Admin.html" />
+    <EmbeddedResource Include="Files\Script.js" />
+    <EmbeddedResource Include="Files\Styles.css" />
+    <EmbeddedResource Include="Files\Templates\ContainerDetails.hbs" />
+    <EmbeddedResource Include="Files\Templates\ContainerList.hbs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiteDB" Version="4.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
       <HintPath>..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.http.abstractions\2.0.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\10.0.1\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Tasks\" />
   </ItemGroup>
 
 </Project>

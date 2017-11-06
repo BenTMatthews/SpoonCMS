@@ -37,7 +37,8 @@ namespace ExampleCore
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.Map("/admin", SpoonCMS.Workers.SpoonWebWorker.BuildAdminPageDelegate);
+            SpoonCMS.Workers.SpoonWebWorker.AdminPath = "/admin";
+            app.Map(SpoonCMS.Workers.SpoonWebWorker.AdminPath, SpoonCMS.Workers.SpoonWebWorker.BuildAdminPageDelegate);
 
             app.UseStaticFiles();
 

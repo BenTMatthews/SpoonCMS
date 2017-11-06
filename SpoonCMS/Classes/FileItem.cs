@@ -8,7 +8,7 @@ namespace SpoonCMS.Classes
 {
     public class FileItem : IItem
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public Stream Value { get; set; }
         public bool Active { get; set; } = true;
         public DateTime BeginDate { get; set; } = DateTime.MinValue;
@@ -24,11 +24,12 @@ namespace SpoonCMS.Classes
 
         public FileItem()
         {
-
+            Id = Guid.NewGuid();
         }
 
         public FileItem(string name)
         {
+            Id = Guid.NewGuid();
             Name = name;
         }
     }

@@ -1,0 +1,138 @@
+﻿body {
+    color: white;
+    font-family: 'Lato', sans-serif;
+    background-color: #b6c6e2;
+    font-size: 14pt;
+    margin: 0;
+    min-height: 99vh;
+}
+
+#header {
+    align-content: center;
+    height: auto;
+    width: 99%;
+    font-size: 1.2em;
+    padding-bottom: 10px;
+    padding-top: 5px;
+    padding-left: 1%;
+    border-bottom: 1px solid black;
+}
+
+#containerList {
+    width: 25%;
+    height: auto;
+    min-height: 250px;
+    align-content: center;
+    display: inline-block;
+    vertical-align: top;
+    border-style: solid;
+    border-color: black;
+    border-width: 0 2px 2px 2px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    position: relative;
+}
+
+    #containerList .containerItem {
+        background-color: #b3b3b3;
+        border: 1px solid white;
+        border-radius: 3px;
+        height: 40px;
+        width: 95%;
+        margin: auto;
+        cursor: pointer;
+        margin-bottom: 3px;
+    }
+
+    #containerList .inactive {
+        background-color: lightcoral;
+    }
+
+    #containerList .containerItem .containerName {
+        font-size: 1em;
+        margin-left: 10px;
+        padding-top: 6px;
+    }
+
+    #containerList #containerListOptions {
+        position: relative;
+        top: 5px;
+        left: 5px;
+    }
+
+
+#containerDetails {
+    width: 72%;
+    margin: 0;
+    display: inline-block;
+    padding: 1%;
+    height: 100%;
+}
+
+    #containerDetails #containerDetailsAttributes {
+        border-bottom: 1px solid black;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+
+
+        #containerDetails #containerDetailsAttributes #containerButtons {
+            position: relative;
+            width: 100%;
+        }
+
+        #containerDetails #containerDetailsAttributes div {
+            margin-bottom: 5px;
+        }
+
+    #containerDetails #containerItemsAccordion {
+        font-family: 'Lato', sans-serif;
+        font-size: 1em;
+    }
+
+        #containerDetails #containerItemsAccordion .itemOptions {
+            width: 100%;
+            margin-top: 10px;
+            height: 20px;
+            position: relative;
+        }
+
+    #containerDetails #containerActions {
+        position: relative;
+        margin-top: 10px;
+    }
+
+.saveButton {
+    background-color: #087234;
+    color: white;
+}
+
+.deleteButton {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: #A8010B;
+    color: white;
+}
+
+/*Overrides*/
+#containerItemsAccordion div.group h3 {
+    font-size: .9em;
+    font-weight: normal;
+}
+
+#containerItemsAccordion div.group p {
+    font-size: .8em;
+    font-weight: normal;
+}
+
+.ui-widget button {
+    font-size: .7em;
+}
+
+@media (max-width: 800px) {
+}
+
+
+@media (max-width: 640px) {
+}

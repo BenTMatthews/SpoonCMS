@@ -37,7 +37,7 @@ namespace SpoonCMS.Workers
             data.AddContainer(con);
         }
 
-        public void AddItemToContainer(string conName, IItem item)
+        public void AddItemToContainer(string conName, ContentItem item)
         {
             data.AddItemToContainer(conName, item);
         }
@@ -47,9 +47,14 @@ namespace SpoonCMS.Workers
             data.DeleteContainer(conName);
         }
 
-        public void UpdateItemInContainer(string conName, IItem item)
+        public void UpdateItemInContainer(string conName, ContentItem item)
         {
             data.UpdateItemInContainer(conName, item);
+        }
+
+        public void UpdateContainer(Container con)
+        {
+            data.UpdateContainer(con);
         }
 
         public void DeleteItemInContainer(string conName, string itemName)
@@ -75,9 +80,19 @@ namespace SpoonCMS.Workers
             return data.GetContainer(conName);
         }
 
+        public Container GetContainer(int conId)
+        {
+            return data.GetContainer(conId);
+        }
+
         public List<ContainerSkinny> GetAllContainers()
         {
             return data.GetAllContainers();
+        }
+
+        public void UpdateContainerName(int conId, string conName)
+        {
+            data.UpdateContainerName(conId, conName);
         }
 
         #endregion

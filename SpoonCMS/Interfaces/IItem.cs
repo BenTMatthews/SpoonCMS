@@ -6,7 +6,7 @@ namespace SpoonCMS.Interfaces
 {
     public interface IItem
     {
-        int Id { get; set; }
+        Guid Id { get; set; }
         object Value { get; set; }
         bool Active { get; set; }
         DateTime BeginDate { get; set; }

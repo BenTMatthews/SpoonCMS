@@ -15,15 +15,26 @@ namespace ExampleCore.Controllers
         {
             SpoonCMS.Workers.SpoonDataWorker worker = new SpoonCMS.Workers.SpoonDataWorker();
 
+            //worker.DeleteContainer()
+
             Container container = new Container("test");
 
             container.AddItem(new ContentItem("test item") { Active = true, Value = "this is some HTML" });
 
+            container.AddItem(new ContentItem("test item 2") { Active = true, Value = "this is also some HTML" });
+
+            Container container2 = new Container("test2");
+
+            container2.AddItem(new ContentItem("test item21") { Active = true, Value = "this is some HTML" });
+
+            container2.AddItem(new ContentItem("test item22") { Active = true, Value = "this is also some HTML" });
+
             //worker.AddContainer(container);
+            //worker.AddContainer(container2);
 
             var containers = worker.GetAllContainers();
 
-            var container2 = worker.GetContainer("test");
+            var container3 = worker.GetContainer("test2");
 
             return View();
         }

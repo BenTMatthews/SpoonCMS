@@ -1,0 +1,32 @@
+﻿<script id="container-details-template" type="text/x-handlebars-template">
+    <div id="containerDetailsAttributes">
+        <div id="containerName" data-container-id="{{Id}}">{{Name}}</div>
+        <div id="containerButtons">
+            <button class="saveContainer saveButton" data-container-id="{{Id}}">Save</button>
+            <button class="editContainerName saveButton" data-container-id="{{Id}}">Edit Name</button>
+            <button class="deleteContainer deleteButton" data-container-id="{{Id}}">Delete</button>
+        </div>
+    </div>
+    <div id="containerItems">
+        <div id="containerItemsAccordion">
+            {{#each Items}}
+                {{> item-partial}}
+            {{/each}}
+        </div>        
+    </div>
+    <div id="containerActions"><button class="addItem saveButton">Add Item</button></div>
+</script>
+
+
+<script id="item-partial-template" type="text/x-handlebars-template">
+    <div class="group" data-item-id="{{Id}}">
+        <h3 class="itemName" data-item-id="{{Id}}"><span class="itemNameSpan">{{Name}}</span></h3>
+        <div>
+            <textarea id="{{Id}}" class="htmlEditBox" name="editorBox">{{Value}}</textarea>
+            <div class="itemOptions">
+                <button class="editItem saveButton" data-item-id="{{Id}}">Edit Name</button>
+                <button class="deleteItem deleteButton" data-item-id="{{Id}}">Delete</button>
+            </div>
+        </div>
+    </div>  
+</script>
