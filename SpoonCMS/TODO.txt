@@ -1,0 +1,10 @@
+﻿- Example of in page use (@razor)
+- example of use with viewdata
+
+
+- Encoded vs raw getter
+- icon
+- update UI for admin
+- authn/authz example or dev
+- Use custom controller with admin?
+- Perhaps some sort of cache?

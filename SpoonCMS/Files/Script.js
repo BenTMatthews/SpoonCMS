@@ -23,7 +23,7 @@ $(document).ready(function () {
         "hideEasing": "linear",
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
-    }    
+    };
 
     containerAddDialog = $("#dialog-addContainer").dialog({
         autoOpen: false,
@@ -58,8 +58,8 @@ $(document).ready(function () {
         buttons: {
             "Edit Container": function () {
                 let conId = $(this).data("container-id");
-                let conName = $("#formEditContainerName").val()
-                UpdateContainerName(conId, conName)
+                let conName = $("#formEditContainerName").val();
+                UpdateContainerName(conId, conName);
 
                 containerEditDialog.dialog("close");
             },
@@ -77,7 +77,7 @@ $(document).ready(function () {
         event.preventDefault();
         let conId = $(this).data("container-id");
         let container = BuildContainer(conId);
-        SaveContainer(conId, container)
+        SaveContainer(conId, container);
     });
 
     itemNameDialog = $("#dialog-itemName").dialog({
@@ -137,16 +137,17 @@ $(document).ready(function () {
     $(document).on('click', '#containerActions button.addItem', function (e) {
         let itemHtml = $("#item-partial-template").html();
         let itemTemplate = Handlebars.compile(itemHtml);
-        let itemObj = {}
+        let itemObj = {};
         itemObj.Name = "New Item";
         itemObj.Id = Guid();
         itemObj.value = "";
 
-        let html = itemTemplate(itemObj)
+        let html = itemTemplate(itemObj);
 
         $("#containerItemsAccordion").append(html);
         $("#containerItemsAccordion").accordion("refresh");
-        CKEDITOR.replace(itemObj.Id);
+        CKEDITOR.replace(itemObj.Id).config.allowedContent = true;
+        UpdatePriorityCounts();
     });
 
     $(document).on('click', '.itemOptions button.editItem', function (e) {
@@ -176,18 +177,23 @@ function UpdateContainerList(conId) {
     $.ajax({
         type: "GET",
         url: _basePath + "/GetContainers",
-        success: function (containers, status) {
-            $("#containerList").html("");
-            let containerListHb = $("#container-list-template").html();
-            let containerListTemplate = Handlebars.compile(containerListHb);
-            Handlebars.registerPartial("item-partial", $("#item-partial-template").html());
+        success: function (result, status) {
+            containers = JSON.parse(result);
+            if (containers.Success) {
+                $("#containerList").html("");
+                let containerListHb = $("#container-list-template").html();
+                let containerListTemplate = Handlebars.compile(containerListHb);
+                Handlebars.registerPartial("item-partial", $("#item-partial-template").html());
 
-            let containersObj = JSON.parse(containers);
-            let html = containerListTemplate(containersObj.Data);
-            $("#containerList").append(html);
+                let html = containerListTemplate(containers.Data);
+                $("#containerList").append(html);
 
-            if (conId) {
-                $("#containerList .containerItem[data-container-id='" + conId + "']").click();
+                if (conId) {
+                    $("#containerList .containerItem[data-container-id='" + conId + "']").click();
+                }
+            }
+            else {
+                toastr["error"](containers.Message);
             }
         },
         error: function (jqXHR) {
@@ -201,8 +207,14 @@ function SaveContainer(conId, container) {
         type: "POST",
         url: _basePath + "/SaveContainer?id=" + conId,
         data: JSON.stringify(container),
-        success: function (data, status) {
-            toastr["success"]("Container saved!");
+        success: function (result, status) {
+            data = JSON.parse(result);
+            if (data.Success) {
+                toastr["success"]("Container saved!");
+            }
+            else {
+                toastr["error"](data.Message);
+            }
         },
         error: function (jqXHR) {
             toastr["error"](jqXHR);
@@ -218,10 +230,16 @@ function AddContainer() {
         type: "POST",
         url: _basePath + "/CreateContainer?name=" + name,
         data: '',
-        success: function (data, status) {
-            toastr["success"]("Container created!");
-            $("#formContainerName").val('');
-            UpdateContainerList();
+        success: function (result, status) {
+            data = JSON.parse(result);
+            if (data.Success) {
+                toastr["success"]("Container created!");
+                $("#formContainerName").val('');
+                UpdateContainerList();
+            }
+            else {
+                toastr["error"](data.Message);
+            }
         },
         error: function (jqXHR) {
             toastr["error"](jqXHR);
@@ -234,49 +252,113 @@ function LoadContainer(id) {
     $.ajax({
         type: "GET",
         url: _basePath + "/GetContainer?id=" + id,
-        success: function (container, status) {
-            $("#containerDetails").html("");
-            let containerDetailsHb = $("#container-details-template").html();
-            let containerDetailsTemplate = Handlebars.compile(containerDetailsHb);
-            let containersObj = JSON.parse(container);
-            let html = containerDetailsTemplate(containersObj.Data);
-            $("#containerDetails").append(html);
+        success: function (result, status) {
+            container = JSON.parse(result);
+            if (container.Success) {
+                $("#containerDetails").html("");
+                let containerDetailsHb = $("#container-details-template").html();
+                let containerDetailsTemplate = Handlebars.compile(containerDetailsHb);
+                let html = containerDetailsTemplate(container.Data);
+                $("#containerDetails").append(html);
 
-            $("#containerItemsAccordion")
-                .accordion({
-                    header: "> div > h3",
-                    heightStyle: "content",
-                    collapsible: true
-                })
-                .sortable({
-                    axis: "y",
-                    handle: "h3",
-                    start: function (event, ui) {
-                        let editorName = ui.item.find("textarea.htmlEditBox").attr("id");
-                        let editor = CKEDITOR.instances[editorName];
-                        editor.updateElement();
-                        editor.destroy();
-                        CKEDITOR.remove(editor);
-                    },
-                    stop: function (event, ui) {
-                        // IE doesn't register the blur when sorting
-                        // so trigger focusout handlers to remove .ui-state-focus
-                        ui.item.children("h3").triggerHandler("focusout");
+                $("#containerItemsAccordion")
+                    .accordion({
+                        header: "> div > h3",
+                        heightStyle: "content",
+                        collapsible: true
+                    })
+                    .sortable({
+                        axis: "y",
+                        handle: "h3",
+                        start: function (event, ui) {
+                            let editorName = ui.item.find("textarea.htmlEditBox").attr("id");
+                            let editor = CKEDITOR.instances[editorName];
+                            editor.updateElement();
+                            editor.destroy();
+                            CKEDITOR.remove(editor);
+                        },
+                        stop: function (event, ui) {
+                            // IE doesn't register the blur when sorting
+                            // so trigger focusout handlers to remove .ui-state-focus
+                            ui.item.children("h3").triggerHandler("focusout");
 
-                        // Refresh accordion to handle new order
-                        let editorName = ui.item.find("textarea.htmlEditBox").attr("id");
-                        $(this).accordion("refresh");
-                        CKEDITOR.replace(editorName);
-                    }
-                });
+                            // Refresh accordion to handle new order
+                            let editorName = ui.item.find("textarea.htmlEditBox").attr("id");
+                            $(this).accordion("refresh");
+                            CKEDITOR.replace(editorName).config.allowedContent = true;
+                            UpdatePriorityCounts();
+                        }
+                    });
 
-            CKEDITOR.replaceAll('htmlEditBox');
+                CKEDITOR.replaceAll('htmlEditBox');
 
+                for (name in CKEDITOR.instances) {
+                    CKEDITOR.instances[name].config.allowedContent = true;
+                }
+
+                UpdatePriorityCounts();
+            }
+            else {
+                toastr["error"](container.Message);
+            }
         },
         error: function (jqXHR) {
             toastr["error"](jqXHR);
         }
     });
+}
+
+function DeleteContainer(conName) {
+    $.ajax({
+        type: "POST",
+        url: _basePath + "/DeleteContainer?name=" + conName,
+        data: '',
+        success: function (result, status) {
+            data = JSON.parse(result);
+            if (data.Success) {
+                toastr["success"]("Container delted!");
+                $("#containerDetails").html("");
+                UpdateContainerList();
+            }
+            else {
+                toastr["error"](data.Message);
+            }
+        },
+        error: function (jqXHR) {
+            toastr["error"](jqXHR);
+            $("#formContainerName").val();
+        }
+    });
+}
+
+function UpdateContainerName(conId, conName) {
+    $.ajax({
+        type: "POST",
+        url: _basePath + "/EditContainerName?id=" + conId + "&name=" + conName,
+        data: '',
+        success: function (result, status) {
+            data = JSON.parse(result);
+            if (data.Success) {
+                toastr["success"]("Container name updated!");
+                $("#containerDetailsAttributes #containerName").html(conName);
+                UpdateContainerList();
+            }
+            else {
+                toastr["error"](data.Message);
+            }
+        },
+        error: function (jqXHR) {
+            toastr["error"](jqXHR);
+            $("#formContainerName").val();
+        }
+    });
+}
+
+function UpdateItemName(itemId) {
+    let itemNameHeader = $("#containerItemsAccordion").find("h3.itemName[data-item-id='" + itemId + "'] span.itemNameSpan");
+
+    itemNameHeader.html($("#formItemName").val());
+    $("#formItemName").value = "";
 }
 
 //GENERAL FUNCTIONS
@@ -292,12 +374,13 @@ function BuildContainer(conId) {
     $("#containerItemsAccordion .group").each(function () {
         let item = {};
 
-        item.Name = $(this).find("h3.itemName")[0].innerText;
+        item.Name = $(this).find("h3.itemName .itemNameSpan").html();
+        item.Priority = $(this).find("h3.itemName .itemPriority").html();
         item.Active = true;
         item.Id = $(this).find("textarea.htmlEditBox").attr("id");
 
         let editor = CKEDITOR.instances[$(this).find("textarea.htmlEditBox").attr("id")];
-        editor.updateElement()
+        editor.updateElement();
 
         item.Value = editor.getData();
 
@@ -309,44 +392,9 @@ function BuildContainer(conId) {
     return container;
 }
 
-function UpdateItemName(itemId) {
-    let itemNameHeader = $("#containerItemsAccordion").find("h3.itemName[data-item-id='" + itemId + "'] span.itemNameSpan");
-
-    itemNameHeader.html($("#formItemName").val());
-    $("#formItemName").value = "";
-}
-
-function UpdateContainerName(conId, conName){
-    $.ajax({
-        type: "POST",
-        url: _basePath + "/EditContainerName?id=" + conId + "&name=" + conName,
-        data: '',
-        success: function (data, status) {
-            toastr["success"]("Container name updated!");
-            $("#containerDetailsAttributes #containerName").html(conName);
-            UpdateContainerList();
-        },
-        error: function (jqXHR) {
-            toastr["error"](jqXHR);
-            $("#formContainerName").val();
-        }
-    });
-}
-
-function DeleteContainer(conName) {
-    $.ajax({
-        type: "POST",
-        url: _basePath + "/DeleteContainer?name=" + conName,
-        data: '',
-        success: function (data, status) {
-            toastr["success"]("Container delted!");
-            $("#containerDetails").html("");
-            UpdateContainerList();
-        },
-        error: function (jqXHR) {
-            toastr["error"](jqXHR);
-            $("#formContainerName").val();
-        }
+function UpdatePriorityCounts() {
+    $("#containerItemsAccordion .group").each(function (index) {
+        $(this).find("h3.itemName .itemPriority").html(index + 1);
     });
 }
 

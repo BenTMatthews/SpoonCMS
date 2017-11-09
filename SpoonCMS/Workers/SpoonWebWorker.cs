@@ -6,7 +6,9 @@ using SpoonCMS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 
 namespace SpoonCMS.Workers
@@ -23,7 +25,9 @@ namespace SpoonCMS.Workers
         private static string _cssMarker = "[!CustomStyleBlock!]";
         private static string _jsPathMarker = "[!CustomPathMarker!]";
 
-        public static string AdminPath { get; set; }
+        public static string AdminPath { get; set; } = @"/admin";
+        public static bool RequireAuth { get; set; } = false;
+        public static List<string> AuthRoles { get; set; } = new List<string>();
 
         #region PageGeneration
 
@@ -31,138 +35,132 @@ namespace SpoonCMS.Workers
         {
             app.Run(async context =>
             {
-                switch (context.Request.Method.ToUpper())
+                if (IsAuthorized(context))
                 {
-                    case "GET":
-                        if (context.Request.Path.HasValue)
-                        {
-                            SpoonDataWorker data = new SpoonDataWorker();
-                            switch (context.Request.Path.Value.ToUpper())
+                    switch (context.Request.Method.ToUpper())
+                    {
+                        case "GET":
+                            if (context.Request.Path.HasValue)
                             {
-                                case "/GETCONTAINERS":
-                                    ServiceResponse<List<ContainerSkinny>> respConsSkinny = new ServiceResponse<List<ContainerSkinny>>();
-                                    try
-                                    {
-                                        respConsSkinny = GetContainers();
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        respConsSkinny.Data = null;
-                                        respConsSkinny.Message = ex.Message;
-                                        respConsSkinny.Success = false;
-                                    }
-                                    await context.Response.WriteAsync(JsonConvert.SerializeObject(respConsSkinny));
-                                    break;
+                                switch (context.Request.Path.Value.ToUpper())
+                                {
+                                    case "/GETCONTAINERS":
+                                        ServiceResponse<List<ContainerSkinny>> respConsSkinny = new ServiceResponse<List<ContainerSkinny>>();
+                                        try
+                                        {
+                                            respConsSkinny = GetContainers();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            respConsSkinny.SetToError(ex);
+                                        }
+                                        await context.Response.WriteAsync(JsonConvert.SerializeObject(respConsSkinny));
+                                        break;
 
-                                case "/GETCONTAINER":
-                                    ServiceResponse<Container> respCon = new ServiceResponse<Container>();
-                                    try
-                                    {
-                                        respCon = GetContainers(context);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        respCon.Data = null;
-                                        respCon.Message = ex.Message;
-                                        respCon.Success = false;
-                                    }
+                                    case "/GETCONTAINER":
+                                        ServiceResponse<Container> respCon = new ServiceResponse<Container>();
+                                        try
+                                        {
+                                            respCon = GetContainer(context);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            respCon.SetToError(ex);
+                                        }
 
-                                    await context.Response.WriteAsync(JsonConvert.SerializeObject(respCon));
-                                    break;
+                                        await context.Response.WriteAsync(JsonConvert.SerializeObject(respCon));
+                                        break;
 
-                                default:
-                                    await context.Response.WriteAsync(context.Request.Path.Value + ": No action found");
-                                    break;
+                                    default:
+                                        await context.Response.WriteAsync(context.Request.Path.Value + ": No action found");
+                                        break;
+                                }
                             }
-                        }
-                        else
-                        {
-                            await context.Response.WriteAsync(BuildAdminPageString());
-                        }
-                        break;
-
-                    case "POST":
-                        if (context.Request.Path.HasValue)
-                        {
-                            switch (context.Request.Path.Value.ToUpper())
+                            else
                             {
-                                case "/SAVECONTAINER":
-                                    ServiceResponse<string> respSave = new ServiceResponse<string>();
-                                    try
-                                    {
-                                        respSave = SaveContainer(context);
-                                    }
-                                    catch(Exception ex)
-                                    {
-                                        respSave.Data = null;
-                                        respSave.Message = ex.Message;
-                                        respSave.Success = false;
-                                    }
-                                    
-                                    await context.Response.WriteAsync(JsonConvert.SerializeObject(respSave));
-                                    break;
-
-                                case "/CREATECONTAINER":
-                                    ServiceResponse<string> respCreate = new ServiceResponse<string>();
-                                    try
-                                    {
-                                        respCreate = CreateContainer(context);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        respCreate.Data = "Failure";
-                                        respCreate.Message = ex.Message;
-                                        respCreate.Success = false;
-                                    }
-
-                                    await context.Response.WriteAsync(JsonConvert.SerializeObject(respCreate));
-                                    break;
-
-                                case "/EDITCONTAINERNAME":
-                                    ServiceResponse<string> respEditName = new ServiceResponse<string>();
-                                    try
-                                    {
-                                        respEditName = EditContainerName(context);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        respEditName.Data = "Failure";
-                                        respEditName.Message = ex.Message;
-                                        respEditName.Success = false;
-                                    }
-
-                                    await context.Response.WriteAsync(JsonConvert.SerializeObject(respEditName));
-                                    break;
-
-                                case "/DELETECONTAINER":
-                                    ServiceResponse<string> respDelete = new ServiceResponse<string>();
-                                    try
-                                    {
-                                        respDelete = DeleteContainer(context);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        respDelete.Data = "Failure";
-                                        respDelete.Message = ex.Message;
-                                        respDelete.Success = false;
-                                    }
-
-                                    await context.Response.WriteAsync(JsonConvert.SerializeObject(respDelete));
-                                    break;
-
-                                default:
-                                    await context.Response.WriteAsync(context.Request.Path.Value + ": No action found");
-                                    break;
+                                await context.Response.WriteAsync(BuildAdminPageString());
                             }
-                        }
-                        else
-                        {
+                            break;
+
+                        case "POST":
+                            if (context.Request.Path.HasValue)
+                            {
+                                switch (context.Request.Path.Value.ToUpper())
+                                {
+                                    case "/SAVECONTAINER":
+                                        ServiceResponse<string> respSave = new ServiceResponse<string>();
+                                        try
+                                        {
+                                            respSave = SaveContainer(context);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            respSave.SetToError(ex);
+                                        }
+
+                                        await context.Response.WriteAsync(JsonConvert.SerializeObject(respSave));
+                                        break;
+
+                                    case "/CREATECONTAINER":
+                                        ServiceResponse<string> respCreate = new ServiceResponse<string>();
+                                        try
+                                        {
+                                            respCreate = CreateContainer(context);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            respCreate.SetToError(ex);
+                                        }
+
+                                        await context.Response.WriteAsync(JsonConvert.SerializeObject(respCreate));
+                                        break;
+
+                                    case "/EDITCONTAINERNAME":
+                                        ServiceResponse<string> respEditName = new ServiceResponse<string>();
+                                        try
+                                        {
+                                            respEditName = EditContainerName(context);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            respEditName.SetToError(ex);
+                                        }
+
+                                        await context.Response.WriteAsync(JsonConvert.SerializeObject(respEditName));
+                                        break;
+
+                                    case "/DELETECONTAINER":
+                                        ServiceResponse<string> respDelete = new ServiceResponse<string>();
+                                        try
+                                        {
+                                            respDelete = DeleteContainer(context);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            respDelete.SetToError(ex);
+                                        }
+
+                                        await context.Response.WriteAsync(JsonConvert.SerializeObject(respDelete));
+                                        break;
+
+                                    default:
+                                        await context.Response.WriteAsync(context.Request.Path.Value + ": No action found");
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                await context.Response.WriteAsync(BuildAdminPageString());
+                            }
+                            break;
+                        default:
                             await context.Response.WriteAsync(BuildAdminPageString());
-                        }
-                        break;
-                    default:
-                        await context.Response.WriteAsync(BuildAdminPageString());
-                        break;
+                            break;
+                    }
+                }
+                else
+                {
+                    await context.Response.WriteAsync(context.Request.Path.Value + ": Access Denied");
                 }
 
             });
@@ -232,23 +230,21 @@ namespace SpoonCMS.Workers
         private static ServiceResponse<List<ContainerSkinny>> GetContainers()
         {
             ServiceResponse<List<ContainerSkinny>> respConsSkinny = new ServiceResponse<List<ContainerSkinny>>();
-            SpoonDataWorker data = new SpoonDataWorker();
-            respConsSkinny.Data = data.GetAllContainers();
+            respConsSkinny.Data = SpoonDataWorker.GetAllContainers();
             respConsSkinny.Message = "Success";
             respConsSkinny.Success = true;
 
             return respConsSkinny;
         }
 
-        private static ServiceResponse<Container> GetContainers(HttpContext context)
+        private static ServiceResponse<Container> GetContainer(HttpContext context)
         {
             ServiceResponse<Container> respCon = new ServiceResponse<Container>();
             int id;
             Container retVal = null;
             if (int.TryParse(context.Request.Query["id"], out id))
             {
-                SpoonDataWorker data = new SpoonDataWorker();
-                retVal = data.GetContainer(id);
+                retVal = SpoonDataWorker.GetContainer(id);
 
                 respCon.Data = retVal;
                 respCon.Message = "Success";
@@ -268,6 +264,8 @@ namespace SpoonCMS.Workers
         {
             ServiceResponse<string> respSave = new ServiceResponse<string>();
             int id;
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
 
             if (int.TryParse(context.Request.Query["id"], out id))
             {
@@ -277,7 +275,7 @@ namespace SpoonCMS.Workers
                     containerString = reader.ReadToEnd();
                 }
 
-                Container postedCon = JsonConvert.DeserializeObject<Container>(containerString);
+                Container postedCon = JsonConvert.DeserializeObject<Container>(containerString, settings);
 
                 //Do a quick check to make sure any newly generated GUIDs are unique and there was no funny business on the client side
                 List<Guid> guids = new List<Guid>();
@@ -294,8 +292,7 @@ namespace SpoonCMS.Workers
                     }
                 }
 
-                SpoonDataWorker data = new SpoonDataWorker();
-                data.UpdateContainer(postedCon);
+                SpoonDataWorker.UpdateContainer(postedCon);
 
                 respSave.Data = "Success";
                 respSave.Message = "Success";
@@ -318,8 +315,7 @@ namespace SpoonCMS.Workers
             if (!String.IsNullOrEmpty(conName))
             {
                 Container newCon = new Container(conName);
-                SpoonDataWorker dataCon = new SpoonDataWorker();
-                dataCon.AddContainer(newCon);
+                SpoonDataWorker.AddContainer(newCon);
 
                 respCreate.Data = "Success";
                 respCreate.Message = "Success";
@@ -342,9 +338,8 @@ namespace SpoonCMS.Workers
             int conId;
 
             if (int.TryParse(context.Request.Query["id"], out conId) && !String.IsNullOrEmpty(conName))
-            {               
-                SpoonDataWorker dataCon = new SpoonDataWorker();
-                dataCon.UpdateContainerName(conId, conName);
+            {
+                SpoonDataWorker.UpdateContainerName(conId, conName);
 
                 respEditName.Data = "Success";
                 respEditName.Message = "Success";
@@ -368,8 +363,7 @@ namespace SpoonCMS.Workers
 
             if (int.TryParse(context.Request.Query["id"], out conId) && !String.IsNullOrEmpty(conName))
             {
-                SpoonDataWorker dataCon = new SpoonDataWorker();
-                dataCon.DeleteContainer(conName);
+                SpoonDataWorker.DeleteContainer(conName);
 
                 respDelete.Data = "Success";
                 respDelete.Message = "Success";
@@ -383,6 +377,33 @@ namespace SpoonCMS.Workers
             }
 
             return respDelete;
+        }
+
+        private static bool IsAuthorized(HttpContext context)
+        {
+            var ret = context.User.HasClaim(c => c.Type == ClaimTypes.Role);
+            var claims = context.User.Claims.Select(claim => new { claim.Type, claim.Value }).ToArray();
+            bool retval = false;
+            if(RequireAuth && (context.User.Identities.Any(i => i.IsAuthenticated)))
+            {                
+                if (AuthRoles.Count != 0)
+                {
+                    foreach(string role in AuthRoles)
+                    {
+                        if(context.User.IsInRole(role))
+                        {
+                            retval = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    retval = true;
+                }
+            }
+
+            return retval;
         }
 
         #endregion

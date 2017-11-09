@@ -4,30 +4,55 @@ using SpoonCMS.Exceptions;
 using SpoonCMS.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
 
 namespace SpoonCMS.DataClasses
 {
     class LiteDBData : ISpoonData
     {
 
-        public string ConnString { get; set; } = @"Data\DB\SpoonData.db";
+        private string _connString { get; set; }
+        private string _defaultDir { get; set; } = @"Data\DB\";
+        private string _dbFileName = "SpoonData.db";
 
         public LiteDBData()
-        {
-
+        {            
+            if (!Directory.Exists(_defaultDir))
+            {
+                Directory.CreateDirectory(_defaultDir);
+            }
+            _connString = _defaultDir + _dbFileName;
         }
 
+        /// <summary>
+        /// A path to the directory to store the DB
+        /// </summary>
+        /// <param name="connString"></param>
         public LiteDBData(string connString)
         {
-            ConnString = connString;
+            if (!string.IsNullOrEmpty(connString))
+            {
+                if (!Directory.Exists(connString))
+                {
+                    Directory.CreateDirectory(connString);
+                }
+                _connString = connString + _dbFileName;
+            }
+            else
+            {
+                if (!Directory.Exists(_defaultDir))
+                {
+                    Directory.CreateDirectory(_defaultDir);
+                }
+                _connString = _defaultDir + _dbFileName;
+            }            
         }
 
         public Container GetContainer(string conName)
         {
             try
             {
-                using (var db = new LiteDatabase(ConnString))
+                using (var db = new LiteDatabase(_connString))
                 {
                     var containers = db.GetCollection<Container>("Containers");
                     Container existingCon = containers.FindOne(x => x.Name.Equals(conName));
@@ -45,7 +70,7 @@ namespace SpoonCMS.DataClasses
         {
             try
             {
-                using (var db = new LiteDatabase(ConnString))
+                using (var db = new LiteDatabase(_connString))
                 {
                     var containers = db.GetCollection<Container>("Containers");
                     Container existingCon = containers.FindOne(x => x.Id.Equals(conId));
@@ -64,7 +89,7 @@ namespace SpoonCMS.DataClasses
             List<ContainerSkinny> retList = new List<ContainerSkinny>();
             try
             {
-                using (var db = new LiteDatabase(ConnString))
+                using (var db = new LiteDatabase(_connString))
                 {
                     var containers = db.GetCollection<Container>("Containers");
                     
@@ -86,7 +111,7 @@ namespace SpoonCMS.DataClasses
         {
             try
             {
-                using (var db = new LiteDatabase(ConnString))
+                using (var db = new LiteDatabase(_connString))
                 {
                     var containers = db.GetCollection<Container>("Containers");
                     var existingCon = containers.FindOne(x => x.Name.Equals(container.Name));
@@ -111,7 +136,7 @@ namespace SpoonCMS.DataClasses
         {
             try
             {
-                using (var db = new LiteDatabase(ConnString))
+                using (var db = new LiteDatabase(_connString))
                 {
                     var containers = db.GetCollection<Container>("Containers");
                     var existingCon = containers.FindOne(x => x.Id.Equals(container.Id));
@@ -141,7 +166,7 @@ namespace SpoonCMS.DataClasses
         {
             try
             {
-                using (var db = new LiteDatabase(ConnString))
+                using (var db = new LiteDatabase(_connString))
                 {
                     var containers = db.GetCollection<Container>("Containers");
                     containers.Delete((Query.EQ("Name", conName)));
@@ -158,7 +183,7 @@ namespace SpoonCMS.DataClasses
             try
             {
 
-                using (var db = new LiteDatabase(ConnString))
+                using (var db = new LiteDatabase(_connString))
                 {
                     var containers = db.GetCollection<Container>("Containers");
                     Container container = containers.FindOne(x => x.Name.Equals(conName));
@@ -192,7 +217,7 @@ namespace SpoonCMS.DataClasses
             try
             {
 
-                using (var db = new LiteDatabase(ConnString))
+                using (var db = new LiteDatabase(_connString))
                 {
                     var containers = db.GetCollection<Container>("Containers");
                     Container container = containers.FindOne(x => x.Name.Equals(conName));
@@ -230,7 +255,7 @@ namespace SpoonCMS.DataClasses
             try
             {
 
-                using (var db = new LiteDatabase(ConnString))
+                using (var db = new LiteDatabase(_connString))
                 {
                     var containers = db.GetCollection<Container>("Containers");
                     Container container = containers.FindOne(x => x.Name.Equals(conName));
@@ -257,7 +282,7 @@ namespace SpoonCMS.DataClasses
         {
             try
             {
-                using (var db = new LiteDatabase(ConnString))
+                using (var db = new LiteDatabase(_connString))
                 {
                     var containers = db.GetCollection<Container>("Containers");
                     Container container = containers.FindOne(x => x.Id.Equals(conId));

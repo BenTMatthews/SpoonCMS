@@ -20,7 +20,10 @@
 
 <script id="item-partial-template" type="text/x-handlebars-template">
     <div class="group" data-item-id="{{Id}}">
-        <h3 class="itemName" data-item-id="{{Id}}"><span class="itemNameSpan">{{Name}}</span></h3>
+        <h3 class="itemName" data-item-id="{{Id}}">
+            <span class="itemNameSpan">{{Name}}</span>
+            <span class="itemPriority">{{Priority}}</span>
+        </h3>
         <div>
             <textarea id="{{Id}}" class="htmlEditBox" name="editorBox">{{Value}}</textarea>
             <div class="itemOptions">

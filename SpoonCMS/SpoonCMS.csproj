@@ -2,7 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.1</Version>
+    <Authors>Ben Matthews</Authors>
+    <Company />
+    <Description>Lightweight page content management</Description>
+    <RepositoryUrl>https://github.com/BenTMatthews/SpoonCMS</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <PackageTags>CMS</PackageTags>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>

@@ -121,6 +121,10 @@
     font-weight: normal;
 }
 
+    #containerItemsAccordion div.group h3 .itemPriority {
+        float: right;
+    }
+
 #containerItemsAccordion div.group p {
     font-size: .8em;
     font-weight: normal;

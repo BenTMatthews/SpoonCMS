@@ -8,61 +8,53 @@ using System.Collections.Generic;
 
 namespace SpoonCMS.Workers
 {
-    public class SpoonDataWorker
+    public static class SpoonDataWorker
     {
-        private ISpoonData data;
+        private static ISpoonData data;
+        public static string connString { get; set; } = "";
 
         #region Contructors
-        public SpoonDataWorker()
-        {
-            data = new LiteDBData();
-        }
 
-        public SpoonDataWorker(string connString)
+        static SpoonDataWorker()
         {
             data = new LiteDBData(connString);
         }
-
-        //public Spoon(DBSettings settings)
-        //{
-
-        //}
 
         #endregion
 
         #region DataOperations
 
-        public void AddContainer(Container con)
+        public static void AddContainer(Container con)
         {
             data.AddContainer(con);
         }
 
-        public void AddItemToContainer(string conName, ContentItem item)
+        public static void AddItemToContainer(string conName, ContentItem item)
         {
             data.AddItemToContainer(conName, item);
         }
 
-        public void DeleteContainer(string conName)
+        public static void DeleteContainer(string conName)
         {
             data.DeleteContainer(conName);
         }
 
-        public void UpdateItemInContainer(string conName, ContentItem item)
+        public static void UpdateItemInContainer(string conName, ContentItem item)
         {
             data.UpdateItemInContainer(conName, item);
         }
 
-        public void UpdateContainer(Container con)
+        public static void UpdateContainer(Container con)
         {
             data.UpdateContainer(con);
         }
 
-        public void DeleteItemInContainer(string conName, string itemName)
+        public static void DeleteItemInContainer(string conName, string itemName)
         {
             data.DeleteItemInContainer(conName, itemName);
         }
 
-        public IItem GetItemByName(string conName, string itemName)
+        public static ContentItem GetItemByName(string conName, string itemName)
         {
             Container con = data.GetContainer(conName);
             if (con.Items.ContainsKey(itemName))
@@ -75,22 +67,22 @@ namespace SpoonCMS.Workers
             }
         }
 
-        public Container GetContainer(string conName)
+        public static Container GetContainer(string conName)
         {
             return data.GetContainer(conName);
         }
 
-        public Container GetContainer(int conId)
+        public static Container GetContainer(int conId)
         {
             return data.GetContainer(conId);
         }
 
-        public List<ContainerSkinny> GetAllContainers()
+        public static List<ContainerSkinny> GetAllContainers()
         {
             return data.GetAllContainers();
         }
 
-        public void UpdateContainerName(int conId, string conName)
+        public static void UpdateContainerName(int conId, string conName)
         {
             data.UpdateContainerName(conId, conName);
         }

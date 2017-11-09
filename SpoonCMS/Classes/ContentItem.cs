@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SpoonCMS.Classes
 {
-    public class ContentItem : IItem
+    public class ContentItem 
     {
         public Guid Id { get; set; }
         public string Value { get; set; }
@@ -15,12 +15,6 @@ namespace SpoonCMS.Classes
         public DateTime Created { get; } = DateTime.Now;
         public String Name { get; set; }
         public int Priority { get; set; } = 0;
-
-        object IItem.Value
-        {
-            get { return this.Value; }
-            set { this.Value = (string)value; }
-        }
 
         public ContentItem()
         {

@@ -7,8 +7,6 @@ namespace SpoonCMS.Interfaces
 {
     interface ISpoonData
     {
-        string ConnString { get; set; }
-
         Container GetContainer(string conName);
         Container GetContainer(int conId);
         List<ContainerSkinny> GetAllContainers();
