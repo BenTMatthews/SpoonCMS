@@ -5,9 +5,9 @@ using System.Net.Http.Headers;
 
 namespace ExampleCore.Controllers
 {
-    public class TestController : Controller
+    public class SpoonController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Admin()
         {
             return Content(SpoonCMS.Workers.SpoonWebWorker.BuildAdminPageString(), "text/html");
         }

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SpoonCMS.Workers;
 
 namespace ExampleCore
 {
@@ -37,13 +34,18 @@ namespace ExampleCore
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            SpoonCMS.Workers.SpoonWebWorker.AdminPath = "/admin";
-            app.Map(SpoonCMS.Workers.SpoonWebWorker.AdminPath, SpoonCMS.Workers.SpoonWebWorker.BuildAdminPageDelegate);
+            SpoonWebWorker.AdminPath = "adminControl";
+            //app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);
 
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute(
+                    name: "SpoonAdmin",
+                    template: SpoonWebWorker.AdminPath + "/{*AllValues}",
+                    defaults: new { controller = "Spoon", action = "Admin" });
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");

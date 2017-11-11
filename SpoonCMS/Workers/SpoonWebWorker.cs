@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SpoonCMS.Classes;
@@ -10,6 +13,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SpoonCMS.Workers
 {
@@ -27,7 +31,7 @@ namespace SpoonCMS.Workers
 
         public static string AdminPath { get; set; } = @"/admin";
         public static bool RequireAuth { get; set; } = false;
-        public static List<string> AuthRoles { get; set; } = new List<string>();
+        public static List<Claim> AuthClaims { get; set; } = new List<Claim>();
 
         #region PageGeneration
 
@@ -35,7 +39,7 @@ namespace SpoonCMS.Workers
         {
             app.Run(async context =>
             {
-                if (IsAuthorized(context))
+                if (IsAuthorizedAsync(context))
                 {
                     switch (context.Request.Method.ToUpper())
                     {
@@ -379,18 +383,18 @@ namespace SpoonCMS.Workers
             return respDelete;
         }
 
-        private static bool IsAuthorized(HttpContext context)
+        private static bool IsAuthorizedAsync(HttpContext context)
         {
-            var ret = context.User.HasClaim(c => c.Type == ClaimTypes.Role);
-            var claims = context.User.Claims.Select(claim => new { claim.Type, claim.Value }).ToArray();
+            AuthenticateResult auth = context.AuthenticateAsync().Result;         
             bool retval = false;
-            if(RequireAuth && (context.User.Identities.Any(i => i.IsAuthenticated)))
+            if(RequireAuth && auth.Succeeded)
             {                
-                if (AuthRoles.Count != 0)
+                var userClaims = auth.Principal.Claims.Select(claim => new { claim.Type, claim.Value }).ToArray();
+                if (AuthClaims.Count != 0)
                 {
-                    foreach(string role in AuthRoles)
+                    foreach(Claim claim in AuthClaims)
                     {
-                        if(context.User.IsInRole(role))
+                        if(userClaims.Any(x => x.Type == claim.Type && x.Value == claim.Value))
                         {
                             retval = true;
                             break;
