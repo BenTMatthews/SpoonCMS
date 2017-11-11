@@ -34,17 +34,17 @@ namespace ExampleCore
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            SpoonWebWorker.AdminPath = "adminControl";
-            //app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);
+            SpoonWebWorker.AdminPath = "/adminControl";
+            app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);
 
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    name: "SpoonAdmin",
-                    template: SpoonWebWorker.AdminPath + "/{*AllValues}",
-                    defaults: new { controller = "Spoon", action = "Admin" });
+                //routes.MapRoute(
+                //    name: "SpoonAdmin",
+                //    template: SpoonWebWorker.AdminPath + "/{*AllValues}",
+                //    defaults: new { controller = "Spoon", action = "Admin" });
 
                 routes.MapRoute(
                     name: "default",

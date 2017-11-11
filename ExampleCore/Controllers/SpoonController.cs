@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
-using System.Net.Http.Headers;
+using SpoonCMS.Workers;
 
 
 namespace ExampleCore.Controllers
@@ -9,7 +8,7 @@ namespace ExampleCore.Controllers
     {
         public IActionResult Admin()
         {
-            return Content(SpoonCMS.Workers.SpoonWebWorker.BuildAdminPageString(), "text/html");
+            return Content(SpoonWebWorker.GenerateResponseString(Request.HttpContext, true), "text/html");
         }
 
     }
