@@ -94,7 +94,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         
         //Core focuses on claims for identity, you can specify the type and value for the claim to allow
         //If the collection is left empty, only the authenticated check will be done
-        SpoonCMS.Workers.SpoonWebWorker.AuthClaims = new List<Claim>() { new Claim(ClaimTypes.Role, "admins"), new Claim(ClaimTypes.Name, "John") };
+        SpoonWebWorker.AuthClaims = new List<Claim>() { new Claim(ClaimTypes.Role, "admins"), new Claim(ClaimTypes.Name, "John") };
         SpoonWebWorker.AdminPath = "/admin";
         app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);
         ...
