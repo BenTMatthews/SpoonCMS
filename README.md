@@ -47,7 +47,7 @@ ViewData["LeftNav"] = container.GetItem("LeftNavLinks").Value;
 ViewData["Footer"] = container.GetItem("FotterContent").Value;
 ```
 
-The one could populate them on the view. Remember to use `@Html.Raw` since the html is stored encoded
+Now you can populate them on the view. Remember to use `@Html.Raw` since the html is stored encoded
 
 ```
 <body>
