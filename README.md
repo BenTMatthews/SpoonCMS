@@ -1,5 +1,5 @@
 # SpoonCMS
-A lightweight CMS for page content - In Alpha (Just don't use it yet)
+A lightweight .NET core CMS for page content - In Alpha (Just don't use it yet)
 
 ## Why would you use this?
 Mostly because you like coding in .Net, but want some flexibility in your content. For the longest time in .Net web dev, if you wanted content management you had to choose between an extremely complex CMS systems that felt like a language/platform unto itself, or deploy updates to html or content files everytime you wanted any update with little exception. So I built a very simple system to manage content (actual content) that did these key things:
