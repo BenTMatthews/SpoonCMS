@@ -61,7 +61,7 @@ The one could populate them on the view. Remember to use `@Html.Raw` since the h
 ## Some Examples and alternative cases
 
 #### Gathering content in the view
-We are managing page content here that is generated from the server, so a couple obvious methods to do it. The most common would be just to use the `ViewData` as show above, but some have taken to keeping my controllers skinny and using helper functions in the view, thsi works as well: 
+We are managing page content here that is generated from the server, so a couple obvious methods to do it. The most common would be just to use the `ViewData` as shown above, but some have taken to keeping controllers skinny and using helper functions in the view, this works as well: 
 
 ```
 @functions
@@ -101,14 +101,14 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     }
 ```
 
-Some people have said they have very complex auth schemes and allowances they want to use, more than just allowing a certain group or subset of users. I originally said you are moving away from the simplicity of Spoon, but enough people ask for it. You can create a controller and endpoint to generate the admin page and it's functions:
+Some people have said they have very complex auth schemes and allowances they want to use, more than just allowing a certain group or subset of users. I originally said you are moving away from the simplicity of Spoon, but enough people asked for it and I gave in. You can create a controller and endpoint to generate the admin page and and handle the ajax calls:
 
 ```
 public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     {
         ...
         //Note that when going to a controller instead of web delegate, you must remove the 
-        //leading '/' from the path
+        //leading '/' from the path. Get it together and standardize this MS!
         SpoonWebWorker.AdminPath = "admin";
         app.UseMvc(routes =>
         {
@@ -127,10 +127,10 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 ```
 
 The routes, actions, and controllers are customizable like any other. And then we can generate a controller like so:
+
 ```
 using Microsoft.AspNetCore.Mvc;
 using SpoonCMS.Workers;
-
 
 namespace ExampleCore.Controllers
 {
@@ -139,6 +139,7 @@ namespace ExampleCore.Controllers
         [MyFancyAuthorizationAttribute]
         public IActionResult Admin()
         {
+            // Me must specifcy in the second parameter that this is for a controller, so set it to true.
             return Content(SpoonWebWorker.GenerateResponseString(Request.HttpContext, true), "text/html");
         }
 
@@ -148,18 +149,49 @@ namespace ExampleCore.Controllers
 
 Now we can access our admin page at /admin like before and it will allow or disallow access based on the auth attribute or scheme you define. 
 
-Note that all auth actions you definie will be for general web requests and api requests for the spoon admin.
+Note that all auth actions you define will be for general web requests and api requests for the spoon admin.
 
 #### But I need a LITTLE logic to my content
 
-Again I was hesitant to add too much logic to gathering content since it would move away from simplicity and predictability, but I came around and added the concept of priority. I will also be adding a date range for valid content in a future date. All of this related to the function of `Container.GetItem();`
+Again I was hesitant to add too much logic to gathering content since it would move away from simplicity and predictability, but I came around and added the concept of priority. I will also be adding a date range for valid content in a future date. All of this related to the function `Container.GetItem();` without specifying a `ContentItem` name.
 
-This is to accomplish the scenario of quickly switching the priority of `ContentItem` in a container without having to update HTML. For instance, if I have a sale I want active between 1PM and 2PM on my site, but I don't want to copy and paste into the same `ContentItem`, I can have one names "NormalContent" and another called "SaleContent" and simply change their priority in the admin and save it down without having to edit html.
+This is to accomplish the scenario of quickly switching the priority of `ContentItem` in a container without having to update HTML. For instance, if I have a sale I want active between 1PM and 2PM on my site, but I don't want to copy and paste into the same `ContentItem`, I can have one names "NormalContent" and another called "SaleContent" and simply change their priority in the admin and save it down without having to edit HTML at 1PM and 2PM respectively.
 
-This introduced the concept of using `Container` for dynamic content storage instead of representing an entity like a page. For instance,  I could have a `Container` called "ProductPageContent" and include 3 `ContentItem` called "Normal", "GameDay", and "BigSale". You could have "Normal" as top priorty for everyday stuff, change priority to "GameDay" if the local sportsball team is playing, and or make the top priorty `ContentItem` "BigSale" if you are trying to move more product that day. Your markup or code would note have to change, simply call 
+This introduced the concept of using `Container` for dynamic content storage instead of representing an entity like a page. For instance,  I could have a `Container` called "ProductPageContent" and include 3 `ContentItem` called "Normal", "GameDay", and "BigSale". You could have "Normal" as top priorty for everyday, change priority to "GameDay" if the local sportsball team is playing, and or make the top priorty `ContentItem` "BigSale" if you are trying to move more product that day. Your markup or code would note have to change, simply call 
 
 ```
 ViewData["BodyCopy"] = SpoonDataWorker.GetContainer("ProductPageContent").GetItem().Value;
 ```
 
-and whichever you set as the high priority in the admin will be what is returned.  
+and whichever you set as the high priority for that container in the admin will be what is returned.  
+
+
+## Where is the data stored?
+
+For the first iteration, all data will be stored in a [LiteDB](https://github.com/mbdavid/LiteDB) instance. It is a fantastic small document database that is light and portable. I subscribe to the idea that content storage should be kept away from app/user storage, and this reflects that. The default path will store it in Data\DB folder, but you can specify a different path on the Configure event like so:
+
+```
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    ...
+    SpoonDataWorker.connString = @"MyFolder\Storage\Spoon";
+    ...
+}
+```
+
+* "But we use a big SQL database for our apps!"
+    * Spoon will not interfere with that. The content calls, and Spoon as a whole, are design to not interfere with functionality.
+* "But I REALLY need to store it somewhere else for whatever reason"
+    * Adding other storage options is on the roadmap. This is not a high priority currently based on user feedback, but SQLite is next to be considered.
+
+## Thank You
+
+This project is only possible thanks to others and their hard work:
+
+* [LiteDB](https://github.com/mbdavid/LiteDB)
+* [jquery](https://github.com/jquery/jquery)
+* [handlebars.js](https://github.com/wycats/handlebars.js/)
+* [CKEditor](https://github.com/ckeditor)
+* [toastr](https://github.com/CodeSeven/toastr)
+* [.NET core](https://github.com/dotnet/core)
+* [Lauren Kidwell Designs](http://www.laurenkidwell.design/)
