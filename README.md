@@ -148,7 +148,7 @@ namespace ExampleCore.Controllers
 }
 ```
 
-Now we can access our admin page at /admin like before and it will allow or disallow access based on the auth attribute or scheme you define. 
+Now we can access our admin page at /admin like before but with the controller instead of the web delegate. It will allow or disallow access based on the auth attribute or scheme you define like you would for any controller. 
 
 Note that all auth actions you define will be for general web requests and api requests for the spoon admin.
 
