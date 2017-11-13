@@ -44,7 +44,7 @@ ViewData["HeaderContent"] = container.GetItem("HeaderContent").Value;
 ViewData["BodyCotentBlock"] = container.GetItem("BodyContentBlock").Value;
 ViewData["RightRail"] = container.GetItem("RightRailContent").Value;
 ViewData["LeftNav"] = container.GetItem("LeftNavLinks").Value;
-ViewData["Footer"] = container.GetItem("FotterContent").Value;
+ViewData["Footer"] = container.GetItem("FooterContent").Value;
 ```
 
 Now you can populate them on the view. Remember to use `@Html.Raw` since the html is stored encoded
