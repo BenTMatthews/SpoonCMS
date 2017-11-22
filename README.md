@@ -180,10 +180,49 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 }
 ```
 
-* "But we use a big SQL database for our apps!"
+## FAQs
+* "What if I user a big enterprise DB for my apps?"
     * Spoon will not interfere with that. The content calls, and Spoon as a whole, are design to not interfere with functionality.
-* "But I REALLY need to store it somewhere else for whatever reason"
+* "Can't I please store it somewhere else?"
     * Adding other storage options is on the roadmap. This is not a high priority currently based on user feedback, but SQLite is next to be considered.
+* "But I need features like creating routes, custom perms, on the fly templates..."
+    * All valid things to want, but Spoon is not built for that. Other larger CMS products like Orchard or Umbraco are great products that are built for large scale applications. Thats not the goal of this project.
+* "You know this isn't actually a whole lot of work or magic, right?
+    * Yes. Just trying to (lightly) formalize work I, and many peers, have had to do a bunch of different times so we never have to again.
+* "Okay there has to be SOME way to input content and access it dynamically with redeploying, right?"
+    * You can fake it, and I have on some projects. If you make a view, call it Custom, that simply frames a data block, you can have this where you want some dynamic content.
+```
+@Html.Raw(ViewData["CustomData"])
+```
+
+and have this in a catchall controller that checks to see if the path matches an ID in the data store, and return the first content item if it does.
+
+```
+//removing leading slash
+    string id = Request.Path.Value.Remove(0,1);
+    if (!string.IsNullOrEmpty(id))
+    {
+        var container = SpoonDataWorker.GetContainer(id);
+
+        if (container != null && container.Items.Count > 0)
+        {
+            ViewData["CustomData"] = container.GetItem().Value;
+            return View("Custom");
+        }
+    }
+
+    return View("NotFound");
+```
+You will also need to set a catchall route for this in startup, and make sure it's the last one entered.
+
+```
+ routes.MapRoute(
+    name: "Custom",
+    template:"{*AllValues}",
+    defaults: new { controller = "Custom", action = "Custom" });
+```
+
+This means if you create a container called "Promotion" and try to access mysite.com/Promotion, you will have your view populated with the first content item in the promotion container.
 
 ## Thank You
 
