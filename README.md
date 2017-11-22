@@ -184,7 +184,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 * "What if I user a big enterprise DB for my apps?"
     * Spoon will not interfere with that. The content calls, and Spoon as a whole, are design to not interfere with functionality.
 * "Can't I please store it somewhere else?"
-    * Adding other storage options is on the roadmap. This is not a high priority currently based on user feedback, but SQLite is next to be considered.
+    * Adding other storage options is on the roadmap. This is not a high priority currently based on user feedback, but Mongo is next to be considered.
 * "But I need features like creating routes, custom perms, on the fly templates..."
     * All valid things to want, but Spoon is not built for that. Other larger CMS products like Orchard or Umbraco are great products that are built for large scale applications. Thats not the goal of this project.
 * "You know this isn't actually a whole lot of work or magic, right?
