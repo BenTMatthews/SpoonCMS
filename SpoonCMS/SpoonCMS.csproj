@@ -3,18 +3,20 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1</Version>
+    <Version>0.1.1</Version>
     <Authors>Ben Matthews</Authors>
     <Company />
     <Description>Lightweight page content management</Description>
     <RepositoryUrl>https://github.com/BenTMatthews/SpoonCMS</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <PackageTags>CMS</PackageTags>
+    <PackageTags>CMS, .Net Core</PackageTags>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageReleaseNotes>Alpha release</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Files\Admin.html" />
+    <None Remove="Files\Icon.jpg" />
     <None Remove="Files\Script.js" />
     <None Remove="Files\Styles.css" />
     <None Remove="Files\Templates\ContainerList.hbs" />
@@ -22,6 +24,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Files\Admin.html" />
+    <EmbeddedResource Include="Files\Icon.jpg" />
     <EmbeddedResource Include="Files\Script.js" />
     <EmbeddedResource Include="Files\Styles.css" />
     <EmbeddedResource Include="Files\Templates\ContainerDetails.hbs" />

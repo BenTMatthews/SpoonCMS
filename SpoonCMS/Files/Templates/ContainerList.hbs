@@ -1,8 +1,6 @@
 ﻿<script id="container-list-template" type="text/x-handlebars-template">
     {{#each this}}
-    <div class="containerItem" data-container-id="{{Id}}">
-        <div class="containerName">{{Name}}</div>
-    </div>
+        <div class="containerItem truncate" data-container-id="{{Id}}"><i class="fa fa-play listIcon" aria-hidden="true"></i>{{Name}}</div>
     {{/each}}
     <div id="containerListOptions">
         <button class="addContainer saveButton">Add Container</button>

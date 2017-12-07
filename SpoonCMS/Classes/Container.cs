@@ -51,13 +51,9 @@ namespace SpoonCMS.Classes
 
                 _items.Add(item.Name, item);
             }
-            catch (ArgumentException ex)
+            catch (Exception)
             {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                throw;
             }
         }
 

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SpoonCMS.Workers;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace ExampleCore
 {
@@ -34,8 +36,16 @@ namespace ExampleCore
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            
+
             SpoonWebWorker.AdminPath = "/adminControl";
-            app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);
+            app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);            
+
+            SpoonDataWorker.connString = @"Data\DB\";
+
+            ////Will need to have some sort of user management system for this to work
+            //SpoonWebWorker.RequireAuth = true;
+            //SpoonWebWorker.AuthClaims = new List<Claim>() { new Claim(ClaimTypes.Role, "admins"), new Claim(ClaimTypes.Name, "John") };
 
             app.UseStaticFiles();
 
@@ -49,6 +59,11 @@ namespace ExampleCore
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "Custom",
+                    template:"{*AllValues}",
+                    defaults: new { controller = "Custom", action = "Custom" });
             });
 
         }

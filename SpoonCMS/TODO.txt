@@ -1,9 +1,4 @@
-﻿- Example of in page use (@razor)
-- example of use with viewdata
-- authn/authz example or dev
-- Use custom controller with admin?
-
-
-- icon
-- update UI for admin
-- Perhaps some sort of cache?
+﻿- update UI for admin
+- Sortable
+- Dialogs and saves
+- Deletes

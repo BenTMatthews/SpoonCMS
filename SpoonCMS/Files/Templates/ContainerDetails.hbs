@@ -1,35 +1,56 @@
 ﻿<script id="container-details-template" type="text/x-handlebars-template">
+    <div id="containerName">
+        <i class="fa fa-pencil editContainerName" aria-hidden="true" data-container-id="{{Id}}"></i> 
+        &nbsp;
+        <span class="containerNameBlock">{{Name}}</span>
+    </div>
     <div id="containerDetailsAttributes">
-        <div id="containerName" data-container-id="{{Id}}">{{Name}}</div>
-        <div id="containerButtons">
-            <button class="saveContainer saveButton" data-container-id="{{Id}}">Save</button>
-            <button class="editContainerName saveButton" data-container-id="{{Id}}">Edit Name</button>
-            <button class="deleteContainer deleteButton" data-container-id="{{Id}}">Delete</button>
-        </div>
+        {{#each Items}}
+            {{> contentDetails-partial}}
+        {{/each}}
     </div>
     <div id="containerItems">
-        <div id="containerItemsAccordion">
-            {{#each Items}}
-                {{> item-partial}}
-            {{/each}}
-        </div>        
+        <div class="itemBlock addItem" data-container-id="{{Id}}">
+            <div class="itemContentBlock">
+                +
+            </div>
+        </div>
+        {{#each Items}}
+            {{> contentBlock-partial}}
+        {{/each}}
     </div>
-    <div id="containerActions"><button class="addItem saveButton">Add Item</button></div>
+
+    <button class="saveContainer" data-container-id="{{Id}}">
+        Save Container
+    </button>
 </script>
 
 
-<script id="item-partial-template" type="text/x-handlebars-template">
-    <div class="group" data-item-id="{{Id}}">
-        <h3 class="itemName" data-item-id="{{Id}}">
-            <span class="itemNameSpan">{{Name}}</span>
-            <span class="itemPriority">{{Priority}}</span>
-        </h3>
-        <div>
-            <textarea id="{{Id}}" class="htmlEditBox" name="editorBox">{{Value}}</textarea>
-            <div class="itemOptions">
-                <button class="editItem saveButton" data-item-id="{{Id}}">Edit Name</button>
-                <button class="deleteItem deleteButton" data-item-id="{{Id}}">Delete</button>
-            </div>
+<script id="contentBlock-partial" type="text/x-handlebars-template">
+    <div class="itemBlock" data-item-id="{{Id}}">
+        <div class="itemContentBlock">
+            {{Name}}
         </div>
-    </div>  
+        <div class="contentPriority">
+            1
+        </div>
+    </div>
+</script>
+
+<script id="contentDetails-partial" type="text/x-handlebars-template">
+    <div class="contentDetailsBlock" data-item-id="{{Id}}">
+        <div class="contentName">
+            <i class="fa fa-pencil editContentName" aria-hidden="true" data-item-id="{{Id}}"></i>
+            &nbsp;
+            <span class="containerItemName">{{Name}}</span>
+        </div>
+        <div class="contentTextBlock">
+            <textarea id="{{Id}}" class="htmlEditBox" name="editorBox">{{Value}}</textarea>
+        </div>
+        <div class="contentSaveBlock">
+            <button class="saveItem" data-item-id="{{Id}}" data-container-id="{{@root.Id}}">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
 </script>

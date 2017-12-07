@@ -25,154 +25,160 @@ $(document).ready(function () {
         "hideMethod": "fadeOut"
     };
 
-    containerAddDialog = $("#dialog-addContainer").dialog({
-        autoOpen: false,
-        height: 250,
-        width: 400,
-        modal: true,
-        buttons: {
-            "Add Container": function () {
-                AddContainer();
-                containerAddDialog.dialog("close");
-            },
-            Cancel: function () {
-                containerAddDialog.dialog("close");
-            }
-        },
-        close: function () {
-            containerAddDialogForm[0].reset();
-            containerAddDialogForm.find("#formContainerName").removeClass("ui-state-error");
-        }
-    });    
-
-    var containerAddDialogForm = containerAddDialog.find("form").on("submit", function (event) {
-        event.preventDefault();
-        AddContainer();
-    });
-
-    containerEditDialog = $("#dialog-nameContainer").dialog({
-        autoOpen: false,
-        height: 250,
-        width: 400,
-        modal: true,
-        buttons: {
-            "Edit Container": function () {
-                let conId = $(this).data("container-id");
-                let conName = $("#formEditContainerName").val();
-                UpdateContainerName(conId, conName);
-
-                containerEditDialog.dialog("close");
-            },
-            Cancel: function () {
-                containerEditDialog.dialog("close");
-            }
-        },
-        close: function () {
-            containerEditDialogForm[0].reset();
-            containerAddDialogForm.find("#formContainerName").removeClass("ui-state-error");
-        }
-    });
-
-    var containerEditDialogForm = containerEditDialog.find("form").on("submit", function (event) {
-        event.preventDefault();
-        let conId = $(this).data("container-id");
-        let container = BuildContainer(conId);
-        SaveContainer(conId, container);
-    });
-
-    itemNameDialog = $("#dialog-itemName").dialog({
-        autoOpen: false,
-        height: 250,
-        width: 350,
-        modal: true,
-        buttons: {
-            "Edit Name": function () {
-                UpdateItemName($(this).data('itemId'));
-                itemNameDialog.dialog("close");
-            },
-            Cancel: function () {
-                itemNameDialog.dialog("close");
-                $("#formItemName").value = "";
-            }
-        },
-        close: function () {
-            itemNameDialogForm[0].reset();
-            itemNameDialogForm.find("#formItemName").removeClass("ui-state-error");
-        }
-    });
-
-    var itemNameDialogForm = itemNameDialog.find("form").on("submit", function (event) {
-        event.preventDefault();
-        UpdateItemName($(this).attr("item-id"));
-    });
+    //$.modal.defaults = {
+    //    closeExisting: true,    // Close existing modals. Set this to false if you need to stack multiple modal instances.
+    //    escapeClose: true,      // Allows the user to close the modal by pressing `ESC`
+    //    clickClose: false,       // Allows the user to close the modal by clicking the overlay
+    //    closeText: 'Close',     // Text content for the close <a> tag.
+    //    closeClass: '',         // Add additional class(es) to the close <a> tag.
+    //    showClose: true,        // Shows a (X) icon/link in the top-right corner
+    //    modalClass: "modal",    // CSS class added to the element being displayed in the modal.
+    //    blockerClass: "modal",  // CSS class added to the overlay (blocker).
+    //    showSpinner: true,      // Enable/disable the default spinner during AJAX requests.
+    //    fadeDuration: null,     // Number of milliseconds the fade transition takes (null means no transition)
+    //    fadeDelay: 1.0          // Point during the overlay's fade-in that the modal begins to fade in (.5 = 50%, 1.5 = 150%, etc.)
+    //};
 
     UpdateContainerList();
+
+    $(document).on('click', '.containerItem', function (e) {
+        let id = $(this).data("container-id");
+
+        $("#containerList .containerItem").removeClass("selected");
+        $(this).addClass("selected");
+
+        LoadContainer(id);
+    });  
 
     $(document).on('click', '#containerListOptions button.addContainer', function (e) {
         containerAddDialog.dialog("open");
     });
 
-    $(document).on('click', '#containerButtons button.saveContainer', function (e) {
+    $(document).on('click', '#containerDetails button.saveContainer', function (e) {
         let conId = $(this).data("container-id");
         let container = BuildContainer(conId);
         SaveContainer(conId, container);
     });
 
-    $(document).on('click', '#containerButtons button.editContainerName', function (e) {
-        let conId = $(this).data("container-id");
-        containerEditDialogForm.find("input#container-name-submit").data("container-id", conId);
+    $(document).on('click', '#containerDetailsAttributes .contentDetailsBlock .contentSaveBlock button.saveItem', function (e) {
+        let containerId = $(this).data("container-id");
+        let contentId = $(this).data("item-id");
+        let contentItem = BuildContentItem(contentId);
+        SaveContentItem(containerId, contentItem);
+    });   
 
-        $("#formEditContainerName").val($("#containerDetailsAttributes #containerName").html());
-        containerEditDialog.data('containerId', conId).dialog("open");
-    });
+    $(document).on('click', '.itemBlock:not(.addItem)', function (e) {
+        let itemId = $(this).data("item-id");
+        $(".contentDetailsBlock").hide();
+        $(".contentDetailsBlock[data-item-id='" + itemId + "']").show();
 
-    $(document).on('click', '#containerButtons button.deleteContainer', function (e) {
-        //let conId = $(this).data("container-id");
-        let conName = $("#containerDetailsAttributes #containerName").html();
-        if (confirm("Are you sure you want to delete this " + conName + " forever?")) {
-            DeleteContainer(conName);
-        }
-    });
+        $("#containerItems .itemBlock").removeClass("active");
+        $(this).addClass("active");
+    });        
 
-    $(document).on('click', '#containerActions button.addItem', function (e) {
-        let itemHtml = $("#item-partial-template").html();
-        let itemTemplate = Handlebars.compile(itemHtml);
+    $(document).on('click', '#containerItems .itemBlock.addItem', function (e) {
+        let itemEditor = $("#contentDetails-partial").html();
+        let itemEditorTemplate = Handlebars.compile(itemEditor);
+
+        let itemBlockHtml = $("#contentBlock-partial").html();
+        let itemBlockTemplate = Handlebars.compile(itemBlockHtml);
+
         let itemObj = {};
         itemObj.Name = "New Item";
         itemObj.Id = Guid();
         itemObj.value = "";
 
-        let html = itemTemplate(itemObj);
+        let htmlEditor = itemEditorTemplate(itemObj);
+        let htmlBlock = itemBlockTemplate(itemObj);
 
-        $("#containerItemsAccordion").append(html);
-        $("#containerItemsAccordion").accordion("refresh");
+        $("#containerDetailsAttributes").append(htmlEditor);
         CKEDITOR.replace(itemObj.Id).config.allowedContent = true;
+        //CKEDITOR.instances[itemObj.Id].config.startupMode = 'source'
+
+        $("#containerItems").append(htmlBlock);
+
+        //Do some cleanup since we don't have @root in partials, get container level data in 
+        let conId = $(this).data("container-id");
+        let conName = $("#containerList .containerItem[data-container-id='" + conId + "']").first().text();
+        $(".contentDetailsBlock[data-item-id='" + itemObj.Id + "'] .contentName .containerName").text(conName);
+        $(".contentDetailsBlock[data-item-id='" + itemObj.Id + "'] .contentSaveBlock button.saveItem").attr("data-container-id", conId);
+
         UpdatePriorityCounts();
+
+        $("#containerItems .itemBlock[data-item-id='" + itemObj.Id + "']").trigger('click');
     });
 
-    $(document).on('click', '.itemOptions button.editItem', function (e) {
-        let itemId = $(this).data("item-id");
-        $("#formItemName").val($("#containerItemsAccordion").find("h3.itemName[data-item-id='" + itemId + "'] span.itemNameSpan").html());
-        itemNameDialogForm.find("input#item-name-edit-submit").data("item-id", itemId);
-        itemNameDialog.data('itemId', itemId).dialog("open");
+    $(document).on('click', '#containerDetails .contentDetailsBlock .contentName i.editContentName', function (e) {
+        let contentId = $(this).data("item-id");
+        let currName = $(".contentDetailsBlock[data-item-id='" + contentId + "'] .contentName .containerItemName").first().text();
+
+        $('#dialog-itemName #editItemNameSave').attr("data-content-id", contentId);
+        $('#dialog-itemName #formItemName').val(currName);
+
+        $('#dialog-itemName').modal();
+        $('#dialog-itemName #formItemName').focus();
     });
-
-    $(document).on('click', '.itemOptions button.deleteItem', function (e) {
-        if (confirm("Are you sure you want to delete this item forever?")) {
-            let itemId = $(this).data('item-id');
-            $("#containerItemsAccordion div.group[data-item-id='" + itemId + "']").remove();
-        }
-    });    
-
-    $(document).on('click', '.containerItem', function (e) {
-        let id = $(this).data("container-id");
-        LoadContainer(id);
-    });    
 
     console.log("SpoonCMS admin page ready!");
 });
 
-//Container Fucntions
+//GENERAL FUNCTIONS
+function BuildContainer(conId) {
+    let container = {};
+
+    container.Id = conId;
+    container.Active = true;
+    container.Name = $("#containerDetails .containerName .containerNameBlock").first().text();
+
+    let itemsDictionary = {};
+
+    $("#containerDetailsAttributes .contentDetailsBlock").each(function () {
+        let contentId = $(this).data("item-id");
+
+        let contentItem = BuildContentItem(contentId);
+
+        itemsDictionary[contentItem.Name] = contentItem;
+    });
+
+    container.Items = itemsDictionary;
+
+    return container;
+}
+
+function BuildContentItem(contentId) {
+    let contentIem = {};
+    let dataBlock = $(".contentDetailsBlock[data-item-id='" + contentId + "']").first();
+    contentIem.Id = contentId;
+    contentIem.Active = true;
+    contentIem.Name = $(dataBlock).find(".contentName .containerItemName").first().text();
+    contentIem.Priority = $("#containerItems .itemBlock .contentPriority").first().text();
+
+    let editor = CKEDITOR.instances[contentId];
+    editor.updateElement();
+
+    contentIem.Value = editor.getData();
+
+    return contentIem;
+}
+
+function UpdatePriorityCounts() {
+    $("#containerItemsAccordion .group").each(function (index) {
+        $(this).find("h3.itemName .itemPriority").html(index + 1);
+    });
+}
+
+function Guid() {
+    return S4() + S4() + '-' + S4() + '-' + S4() + '-' +
+        S4() + '-' + S4() + S4() + S4();
+}
+
+function S4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+}
+
+//Service Functions
 function UpdateContainerList(conId) {
     $.ajax({
         type: "GET",
@@ -183,7 +189,8 @@ function UpdateContainerList(conId) {
                 $("#containerList").html("");
                 let containerListHb = $("#container-list-template").html();
                 let containerListTemplate = Handlebars.compile(containerListHb);
-                Handlebars.registerPartial("item-partial", $("#item-partial-template").html());
+                Handlebars.registerPartial("contentBlock-partial", $("#contentBlock-partial").html());
+                Handlebars.registerPartial("contentDetails-partial", $("#contentDetails-partial").html());
 
                 let html = containerListTemplate(containers.Data);
                 $("#containerList").append(html);
@@ -211,6 +218,26 @@ function SaveContainer(conId, container) {
             data = JSON.parse(result);
             if (data.Success) {
                 toastr["success"]("Container saved!");
+            }
+            else {
+                toastr["error"](data.Message);
+            }
+        },
+        error: function (jqXHR) {
+            toastr["error"](jqXHR);
+        }
+    });
+}
+
+function SaveContentItem(conId, contentItem) {
+    $.ajax({
+        type: "POST",
+        url: _basePath + "/SaveContentItem?id=" + conId,
+        data: JSON.stringify(contentItem),
+        success: function (result, status) {
+            data = JSON.parse(result);
+            if (data.Success) {
+                toastr["success"](contentItem.Name + " saved!");
             }
             else {
                 toastr["error"](data.Message);
@@ -259,44 +286,18 @@ function LoadContainer(id) {
                 let containerDetailsHb = $("#container-details-template").html();
                 let containerDetailsTemplate = Handlebars.compile(containerDetailsHb);
                 let html = containerDetailsTemplate(container.Data);
-                $("#containerDetails").append(html);
-
-                $("#containerItemsAccordion")
-                    .accordion({
-                        header: "> div > h3",
-                        heightStyle: "content",
-                        collapsible: true
-                    })
-                    .sortable({
-                        axis: "y",
-                        handle: "h3",
-                        start: function (event, ui) {
-                            let editorName = ui.item.find("textarea.htmlEditBox").attr("id");
-                            let editor = CKEDITOR.instances[editorName];
-                            editor.updateElement();
-                            editor.destroy();
-                            CKEDITOR.remove(editor);
-                        },
-                        stop: function (event, ui) {
-                            // IE doesn't register the blur when sorting
-                            // so trigger focusout handlers to remove .ui-state-focus
-                            ui.item.children("h3").triggerHandler("focusout");
-
-                            // Refresh accordion to handle new order
-                            let editorName = ui.item.find("textarea.htmlEditBox").attr("id");
-                            $(this).accordion("refresh");
-                            CKEDITOR.replace(editorName).config.allowedContent = true;
-                            UpdatePriorityCounts();
-                        }
-                    });
+                $("#containerDetails").append(html);                
 
                 CKEDITOR.replaceAll('htmlEditBox');
 
                 for (name in CKEDITOR.instances) {
                     CKEDITOR.instances[name].config.allowedContent = true;
+                    //CKEDITOR.instances[name].config.startupMode = 'source';
                 }
 
                 UpdatePriorityCounts();
+
+                $("#containerItems").children(".itemBlock:not(.addItem)").first().trigger("click");
             }
             else {
                 toastr["error"](container.Message);
@@ -359,52 +360,4 @@ function UpdateItemName(itemId) {
 
     itemNameHeader.html($("#formItemName").val());
     $("#formItemName").value = "";
-}
-
-//GENERAL FUNCTIONS
-function BuildContainer(conId) {
-    let container = {};
-
-    container.Id = conId;
-    container.Active = true;
-    container.Name = $("#containerDetailsAttributes #containerName")[0].innerText;
-
-    let itemsDictionary = {};
-
-    $("#containerItemsAccordion .group").each(function () {
-        let item = {};
-
-        item.Name = $(this).find("h3.itemName .itemNameSpan").html();
-        item.Priority = $(this).find("h3.itemName .itemPriority").html();
-        item.Active = true;
-        item.Id = $(this).find("textarea.htmlEditBox").attr("id");
-
-        let editor = CKEDITOR.instances[$(this).find("textarea.htmlEditBox").attr("id")];
-        editor.updateElement();
-
-        item.Value = editor.getData();
-
-        itemsDictionary[item.Name] = item;
-    });
-
-    container.Items = itemsDictionary;
-
-    return container;
-}
-
-function UpdatePriorityCounts() {
-    $("#containerItemsAccordion .group").each(function (index) {
-        $(this).find("h3.itemName .itemPriority").html(index + 1);
-    });
-}
-
-function Guid() {
-    return S4() + S4() + '-' + S4() + '-' + S4() + '-' +
-        S4() + '-' + S4() + S4() + S4();
-}
-
-function S4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
 }

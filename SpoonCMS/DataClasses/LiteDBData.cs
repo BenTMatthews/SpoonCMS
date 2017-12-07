@@ -60,9 +60,9 @@ namespace SpoonCMS.DataClasses
                     return existingCon;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -78,9 +78,9 @@ namespace SpoonCMS.DataClasses
                     return existingCon;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -101,9 +101,9 @@ namespace SpoonCMS.DataClasses
 
                 return retList;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -126,9 +126,9 @@ namespace SpoonCMS.DataClasses
                     containers.EnsureIndex(x => x.Name);
                 }
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -156,9 +156,9 @@ namespace SpoonCMS.DataClasses
                     }                    
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -172,9 +172,9 @@ namespace SpoonCMS.DataClasses
                     containers.Delete((Query.EQ("Name", conName)));
                 }
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -206,9 +206,9 @@ namespace SpoonCMS.DataClasses
                     }
                 }
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -244,9 +244,9 @@ namespace SpoonCMS.DataClasses
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -272,9 +272,9 @@ namespace SpoonCMS.DataClasses
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -298,9 +298,9 @@ namespace SpoonCMS.DataClasses
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }

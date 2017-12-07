@@ -24,6 +24,7 @@ namespace SpoonCMS.Workers
         private static string _cssPath = "SpoonCMS.Files.Styles.css";
         private static string _containerListTemplatePath = "SpoonCMS.Files.Templates.ContainerList.hbs";
         private static string _containerDetailsTemplatePath = "SpoonCMS.Files.Templates.ContainerDetails.hbs";
+        private static string _iconPath = "SpoonCMS.Files.Icon.jpg";
 
         private static string _jsMarker = "[!CustomScriptBlock!]";
         private static string _cssMarker = "[!CustomStyleBlock!]";
@@ -124,6 +125,20 @@ namespace SpoonCMS.Workers
                                     }
 
                                     response = JsonConvert.SerializeObject(respSave);
+                                    break;
+
+                                case "/SAVECONTENTITEM":
+                                    ServiceResponse<string> respContentSave = new ServiceResponse<string>();
+                                    try
+                                    {
+                                        respContentSave = SaveContentItem(context);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        respContentSave.SetToError(ex);
+                                    }
+
+                                    response = JsonConvert.SerializeObject(respContentSave);
                                     break;
 
                                 case "/CREATECONTAINER":
@@ -243,6 +258,14 @@ namespace SpoonCMS.Workers
                 }
             }
 
+            using (Stream stream = assembly.GetManifestResourceStream(_iconPath))
+            {
+                byte[] filebytes = new byte[stream.Length];
+                stream.Read(filebytes, 0, Convert.ToInt32(stream.Length));
+                string base64 = Convert.ToBase64String(filebytes, Base64FormattingOptions.None);               
+                html = html.Replace("[!IconBlock!]", base64);                
+            }
+
             retval = html.Replace(_jsMarker, js).Replace(_cssMarker, css) + hbTemplates;
 
             return retval;
@@ -318,6 +341,49 @@ namespace SpoonCMS.Workers
                 }
 
                 SpoonDataWorker.UpdateContainer(postedCon);
+
+                respSave.Data = "Success";
+                respSave.Message = "Success";
+                respSave.Success = true;
+            }
+            else
+            {
+                respSave.Data = "Failure";
+                respSave.Message = "Id not valid";
+                respSave.Success = false;
+            }
+
+            return respSave;
+        }
+
+        private static ServiceResponse<string> SaveContentItem(HttpContext context)
+        {
+            ServiceResponse<string> respSave = new ServiceResponse<string>();
+            int id;
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.ObjectCreationHandling = ObjectCreationHandling.Replace;
+
+            if (int.TryParse(context.Request.Query["id"], out id))
+            {
+                string contentString;
+                using (StreamReader reader = new StreamReader(context.Request.Body))
+                {
+                    contentString = reader.ReadToEnd();
+                }
+
+                ContentItem postedContent = JsonConvert.DeserializeObject<ContentItem>(contentString, settings);
+                               
+                Container con = SpoonDataWorker.GetContainer(id);
+
+                string itemKey = con.Items.FirstOrDefault(x => x.Value.Id == postedContent.Id).Key; //See if exists
+                if(!string.IsNullOrEmpty(itemKey))
+                {
+                    con.RemoveItem(itemKey); // just remove the esisting item we are replacing.
+                }
+
+                con.AddItem(postedContent);
+
+                SpoonDataWorker.UpdateContainer(con);
 
                 respSave.Data = "Success";
                 respSave.Message = "Success";

@@ -4,28 +4,31 @@
 <head>
     <meta charset="utf-8" />
     <title>SpoonCMS Admin</title>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/redmond/jquery-ui.css"/>
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Comfortaa:300,400,700" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />    
     <style>
         [!CustomStyleBlock!]
     </style>
 </head>
-<body>
-    <div id="header">Spoon CMS admin</div>
+<body>    
     <div id="containerList">
         
     </div>
-    <div id="containerDetails">
-        
+    <div id="containerMain">
+        <div id="header"><img src="data:image/jpeg;charset=utf-8;base64,[!IconBlock!]" /></div>
+        <div id="containerDetails">
+
+        </div>
     </div>
 
-    <div id="dialog-itemName" title="Change Item Name">
+    <div id="dialog-itemName" class="modal" title="Change Item Name">
+        <div class="formHeader">Change Item Name</div>
         <form>
             <fieldset>
-                <label for="itemName">Name</label>
                 <input type="text" name="itemName" id="formItemName" value="Item Name" class="text ui-widget-content ui-corner-all">               
-
+                <button id="editItemNameSave">Save</button>
                 <!-- Allow form submission with keyboard without duplicating the dialog button -->
                 <input id="item-name-edit-submit"  data-item-id="" type="submit" tabindex="-1" style="position:absolute; top:-1000px">
             </fieldset>
@@ -58,10 +61,7 @@
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
             crossorigin="anonymous">
     </script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-            crossorigin="anonymous">
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
     <script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>

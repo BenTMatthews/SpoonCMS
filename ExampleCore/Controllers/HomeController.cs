@@ -10,6 +10,7 @@ namespace ExampleCore.Controllers
         public IActionResult Index()
         {
             ViewData["Title"] = SpoonDataWorker.GetContainer("HomePage").GetItem("pageTitle").Value;
+            ViewData["Carousel"] = SpoonDataWorker.GetContainer("HomePage").GetItem("myCarousel").Value;
             return View();
         }
 
