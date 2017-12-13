@@ -28,34 +28,38 @@
         <form>
             <fieldset>
                 <input type="text" name="itemName" id="formItemName" value="Item Name" class="text ui-widget-content ui-corner-all">               
-                <button id="editItemNameSave">Save</button>
+                <button id="editItemNameSave" type="button">Save</button>
                 <!-- Allow form submission with keyboard without duplicating the dialog button -->
                 <input id="item-name-edit-submit"  data-item-id="" type="submit" tabindex="-1" style="position:absolute; top:-1000px">
             </fieldset>
         </form>
     </div>
-    <div id="dialog-addContainer" title="Add Container">
-        <form>
-            <fieldset>
-                <label for="containerName">Name</label>
-                <input type="text" name="containerName" id="formContainerName" value="Container Name" class="text ui-widget-content ui-corner-all">
 
-                <!-- Allow form submission with keyboard without duplicating the dialog button -->
-                <input id="container-add-submit" data-item-id="" type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-            </fieldset>
-        </form>
-    </div>
-    <div id="dialog-nameContainer" title="Edit Container Name">
+    <div id="dialog-nameContainer" class="modal" title="Edit Container Name">
+        <div class="formHeader">Change Container Name</div>
         <form>
             <fieldset>
                 <label for="containerName">Name</label>
                 <input type="text" name="containerName" id="formEditContainerName" value="" class="text ui-widget-content ui-corner-all">
-
+                <button id="editContainerNameSave" type="button">Save</button>
                 <!-- Allow form submission with keyboard without duplicating the dialog button -->
-                <input id="container-name-submit" data-item-id="" type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                <input id="container-name-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px">
             </fieldset>
         </form>
     </div>
+
+    <div id="dialog-addContainer" class="modal" title="Add Container">
+        <div class="formHeader">Add Container</div>
+        <form>
+            <fieldset>
+                <label for="containerName">Name</label>
+                <input type="text" name="containerName" id="formContainerName" value="Container Name" class="text ui-widget-content ui-corner-all">
+                <button id="addContainerAdd" type="button">Add</button>
+                <!-- Allow form submission with keyboard without duplicating the dialog button -->
+                <input id="container-add-submit" data-item-id="" type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+            </fieldset>
+        </form>
+    </div>    
 
     <script src="http://code.jquery.com/jquery-3.2.1.min.js"
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -65,6 +69,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
     <script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>    
     <script>
         [!CustomScriptBlock!]
     </script>

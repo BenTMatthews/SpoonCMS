@@ -25,124 +25,227 @@ $(document).ready(function () {
         "hideMethod": "fadeOut"
     };
 
-    //$.modal.defaults = {
-    //    closeExisting: true,    // Close existing modals. Set this to false if you need to stack multiple modal instances.
-    //    escapeClose: true,      // Allows the user to close the modal by pressing `ESC`
-    //    clickClose: false,       // Allows the user to close the modal by clicking the overlay
-    //    closeText: 'Close',     // Text content for the close <a> tag.
-    //    closeClass: '',         // Add additional class(es) to the close <a> tag.
-    //    showClose: true,        // Shows a (X) icon/link in the top-right corner
-    //    modalClass: "modal",    // CSS class added to the element being displayed in the modal.
-    //    blockerClass: "modal",  // CSS class added to the overlay (blocker).
-    //    showSpinner: true,      // Enable/disable the default spinner during AJAX requests.
-    //    fadeDuration: null,     // Number of milliseconds the fade transition takes (null means no transition)
-    //    fadeDelay: 1.0          // Point during the overlay's fade-in that the modal begins to fade in (.5 = 50%, 1.5 = 150%, etc.)
-    //};
-
-    UpdateContainerList();
-
-    $(document).on('click', '.containerItem', function (e) {
-        let id = $(this).data("container-id");
+    $(document).on('click', '#containerList .containerItem', function (e) {
+        let id = $(this).attr("data-container-id");
 
         $("#containerList .containerItem").removeClass("selected");
         $(this).addClass("selected");
 
         LoadContainer(id);
-    });  
+    });
+
+    $(document).on('click', '#containerList .containerItem i.deleteContainer', function (e) {
+        if (confirm("Are you sure you want to delete this container and all items?") == true) {
+            let name = $(this).attr("data-container-name");
+            DeleteContainer(name);
+        }
+        else {
+
+        }
+    });
 
     $(document).on('click', '#containerListOptions button.addContainer', function (e) {
         containerAddDialog.dialog("open");
     });
 
     $(document).on('click', '#containerDetails button.saveContainer', function (e) {
-        let conId = $(this).data("container-id");
+        let conId = $(this).attr("data-container-id");
         let container = BuildContainer(conId);
-        SaveContainer(conId, container);
+
+        if (container != false) {
+            SaveContainer(conId, container);
+        }
     });
 
-    $(document).on('click', '#containerDetailsAttributes .contentDetailsBlock .contentSaveBlock button.saveItem', function (e) {
-        let containerId = $(this).data("container-id");
-        let contentId = $(this).data("item-id");
+    $(document).on('click', '#containerDetailsAttributes .contentDetailsBlock .contentSaveBlock i.saveItem', function (e) {
+        let containerId = $(this).attr("data-container-id");
+        let contentId = $(this).attr("data-item-id");
         let contentItem = BuildContentItem(contentId);
         SaveContentItem(containerId, contentItem);
-    });   
+    });
 
-    $(document).on('click', '.itemBlock:not(.addItem)', function (e) {
-        let itemId = $(this).data("item-id");
+    $(document).on('click', '#containerItems .itemBlock', function (e) {
+        let itemId = $(this).attr("data-item-id");
         $(".contentDetailsBlock").hide();
         $(".contentDetailsBlock[data-item-id='" + itemId + "']").show();
 
         $("#containerItems .itemBlock").removeClass("active");
         $(this).addClass("active");
-    });        
-
-    $(document).on('click', '#containerItems .itemBlock.addItem', function (e) {
-        let itemEditor = $("#contentDetails-partial").html();
-        let itemEditorTemplate = Handlebars.compile(itemEditor);
-
-        let itemBlockHtml = $("#contentBlock-partial").html();
-        let itemBlockTemplate = Handlebars.compile(itemBlockHtml);
-
-        let itemObj = {};
-        itemObj.Name = "New Item";
-        itemObj.Id = Guid();
-        itemObj.value = "";
-
-        let htmlEditor = itemEditorTemplate(itemObj);
-        let htmlBlock = itemBlockTemplate(itemObj);
-
-        $("#containerDetailsAttributes").append(htmlEditor);
-        CKEDITOR.replace(itemObj.Id).config.allowedContent = true;
-        //CKEDITOR.instances[itemObj.Id].config.startupMode = 'source'
-
-        $("#containerItems").append(htmlBlock);
-
-        //Do some cleanup since we don't have @root in partials, get container level data in 
-        let conId = $(this).data("container-id");
-        let conName = $("#containerList .containerItem[data-container-id='" + conId + "']").first().text();
-        $(".contentDetailsBlock[data-item-id='" + itemObj.Id + "'] .contentName .containerName").text(conName);
-        $(".contentDetailsBlock[data-item-id='" + itemObj.Id + "'] .contentSaveBlock button.saveItem").attr("data-container-id", conId);
-
-        UpdatePriorityCounts();
-
-        $("#containerItems .itemBlock[data-item-id='" + itemObj.Id + "']").trigger('click');
     });
 
+    $(document).on('click', '#containerItems .addItem', function (e) {
+        AddItemToContainer();
+    });
+
+    $(document).on('click', '#containerDetailsAttributes .contentDetailsBlock .contentName .deleteItemBlock i.deleteItem', function (e) {
+        if (confirm("Are you sure you want to delete this item from the container?") == true) {
+            let contentId = $(this).attr("data-item-id");
+            RemoveItemFromContainer(contentId);
+        }
+        else {
+
+        }
+    });
+
+
+    //Dialog Handlers
     $(document).on('click', '#containerDetails .contentDetailsBlock .contentName i.editContentName', function (e) {
-        let contentId = $(this).data("item-id");
+        e.preventDefault();
+
+        let contentId = $(this).attr("data-item-id");
         let currName = $(".contentDetailsBlock[data-item-id='" + contentId + "'] .contentName .containerItemName").first().text();
 
-        $('#dialog-itemName #editItemNameSave').attr("data-content-id", contentId);
+        $('#dialog-itemName form').attr("data-item-id", contentId);
         $('#dialog-itemName #formItemName').val(currName);
 
         $('#dialog-itemName').modal();
-        $('#dialog-itemName #formItemName').focus();
+        $('#dialog-itemName #formItemName').select();
     });
+
+    $(document).on('click', '#dialog-itemName #editItemNameSave', function (e) {
+        $('#dialog-itemName form').submit();
+    });
+
+    $('#dialog-itemName form').submit(function (e) {
+        e.preventDefault();
+        let contentId = $(this).attr("data-item-id");
+        UpdateItemName(contentId);
+    });
+
+
+    $(document).on('click', '#containerDetails #containerName i.editContainerName', function (e) {
+        e.preventDefault();
+
+        let conId = $(this).attr("data-container-id");
+        let currName = $("#containerDetails #containerName .containerNameBlock").first().text();
+
+        $('#dialog-nameContainer form').attr("data-container-id", conId);
+        $('#dialog-nameContainer #formEditContainerName').val(currName);
+
+        $('#dialog-nameContainer').modal();
+        $('#dialog-nameContainer #formEditContainerName').select();
+    });
+
+    $(document).on('click', '#dialog-nameContainer #editContainerNameSave', function (e) {
+        $('#dialog-nameContainer form').submit();
+    });
+
+    $('#dialog-nameContainer form').submit(function (e) {
+        e.preventDefault();
+        let conId = $(this).attr("data-container-id");
+        let newName = $('#dialog-nameContainer #formEditContainerName').val();
+        UpdateContainerName(conId, newName);
+    });
+
+
+    $(document).on('click', '#containerList #containerListOptions #addContainer', function (e) {
+        e.preventDefault();
+
+        $('#dialog-addContainer').modal();
+        $('#dialog-addContainer #formContainerName').val("Container name");
+        $('#dialog-addContainer #formContainerName').select();
+    });
+
+    $(document).on('click', '#dialog-addContainer #addContainerAdd', function (e) {
+        $('#dialog-addContainer form').submit();
+    });
+
+    $('#dialog-addContainer form').submit(function (e) {
+        e.preventDefault();
+        let newName = $('#dialog-addContainer #formContainerName').val();
+        AddContainer(newName);
+    });
+
+
+    //Load Up functions
+    UpdateContainerList();
 
     console.log("SpoonCMS admin page ready!");
 });
 
 //GENERAL FUNCTIONS
+
+function AddItemToContainer() {
+    let itemEditor = $("#contentDetails-partial").html();
+    let itemEditorTemplate = Handlebars.compile(itemEditor);
+
+    let itemBlockHtml = $("#contentBlock-partial").html();
+    let itemBlockTemplate = Handlebars.compile(itemBlockHtml);
+
+    let itemObj = {};
+    itemObj.Name = "New Item";
+    itemObj.Id = Guid();
+    itemObj.value = "";
+
+    let htmlEditor = itemEditorTemplate(itemObj);
+    let htmlBlock = itemBlockTemplate(itemObj);
+
+    $("#containerDetailsAttributes").append(htmlEditor);
+    CKEDITOR.replace(itemObj.Id).config.allowedContent = true;
+    //CKEDITOR.instances[itemObj.Id].config.startupMode = 'source'
+
+    $("#containerItems").append(htmlBlock);
+
+    //Do some cleanup since we don't have @root in partials, get container level data in 
+    let conId = $(this).attr("data-container-id");
+    let conName = $("#containerList .containerItem[data-container-id='" + conId + "']").first().text();
+    $(".contentDetailsBlock[data-item-id='" + itemObj.Id + "'] .contentName .containerName").text(conName);
+    $(".contentDetailsBlock[data-item-id='" + itemObj.Id + "'] .contentSaveBlock button.saveItem").attr("data-container-id", conId);
+
+    UpdatePriorityCounts();
+
+    $("#containerItems .itemBlock[data-item-id='" + itemObj.Id + "']").trigger('click');
+}
+
+function RemoveItemFromContainer(itemId) {
+    $("#containerDetailsAttributes .contentDetailsBlock[data-item-id='" + itemId + "']").remove();
+    $("#containerItems .itemBlock[data-item-id='" + itemId + "']").remove();
+
+    $("#containerItems").children(".itemBlock").first().trigger("click");
+}
+
+function UpdateItemName(itemId) {
+    let newName = $('#dialog-itemName #formItemName').val();
+
+    $(".contentDetailsBlock[data-item-id='" + itemId + "'] .contentName .containerItemName").first().text(newName);
+    $("#containerItems .itemBlock[data-item-id='" + itemId + "'] .itemContentBlock").first().text(newName)
+
+    $.modal.close();
+
+    toastr["success"]('Content name changed to "' + newName + '"');
+}
+
 function BuildContainer(conId) {
     let container = {};
 
     container.Id = conId;
     container.Active = true;
-    container.Name = $("#containerDetails .containerName .containerNameBlock").first().text();
+    container.Name = $("#containerDetails #containerName .containerNameBlock").first().text();
 
     let itemsDictionary = {};
 
-    $("#containerDetailsAttributes .contentDetailsBlock").each(function () {
-        let contentId = $(this).data("item-id");
+    let validItems = true;
 
+    $("#containerItems .itemBlock").each(function () {
+        let contentId = $(this).attr("data-item-id");
         let contentItem = BuildContentItem(contentId);
 
-        itemsDictionary[contentItem.Name] = contentItem;
+        if (!(contentItem.Name in itemsDictionary)) {
+            itemsDictionary[contentItem.Name] = contentItem;
+        } else {
+            toastr["error"]("Content Items must have unique names");
+            validItems = false;
+            return false; //breaks out of each loop, not function
+        }
     });
 
-    container.Items = itemsDictionary;
+    if (validItems) {
+        container.Items = itemsDictionary;
+        return container;
+    } else {
+        return false;
+    }
 
-    return container;
 }
 
 function BuildContentItem(contentId) {
@@ -162,8 +265,8 @@ function BuildContentItem(contentId) {
 }
 
 function UpdatePriorityCounts() {
-    $("#containerItemsAccordion .group").each(function (index) {
-        $(this).find("h3.itemName .itemPriority").html(index + 1);
+    $("#containerDetails #containerItems .itemBlock").each(function (index) {
+        $(this).find(".contentPriority").text(index + 1);
     });
 }
 
@@ -178,8 +281,10 @@ function S4() {
         .substring(1);
 }
 
+
 //Service Functions
-function UpdateContainerList(conId) {
+
+function UpdateContainerList(conName) {
     $.ajax({
         type: "GET",
         url: _basePath + "/GetContainers",
@@ -193,10 +298,11 @@ function UpdateContainerList(conId) {
                 Handlebars.registerPartial("contentDetails-partial", $("#contentDetails-partial").html());
 
                 let html = containerListTemplate(containers.Data);
-                $("#containerList").append(html);
+                $("#containerList").append(html);          
 
-                if (conId) {
-                    $("#containerList .containerItem[data-container-id='" + conId + "']").click();
+                if (conName) {
+                    $("#containerList .containerItem").removeClass("selected");
+                    $("#containerList .containerItem[data-container-name='" + conName + "']").addClass("selected");
                 }
             }
             else {
@@ -249,13 +355,10 @@ function SaveContentItem(conId, contentItem) {
     });
 }
 
-function AddContainer() {
-
-    let name = $("#formContainerName").val();
-
+function AddContainer(conName) {
     $.ajax({
         type: "POST",
-        url: _basePath + "/CreateContainer?name=" + name,
+        url: _basePath + "/CreateContainer?name=" + conName,
         data: '',
         success: function (result, status) {
             data = JSON.parse(result);
@@ -263,6 +366,7 @@ function AddContainer() {
                 toastr["success"]("Container created!");
                 $("#formContainerName").val('');
                 UpdateContainerList();
+                $.modal.close();
             }
             else {
                 toastr["error"](data.Message);
@@ -286,7 +390,7 @@ function LoadContainer(id) {
                 let containerDetailsHb = $("#container-details-template").html();
                 let containerDetailsTemplate = Handlebars.compile(containerDetailsHb);
                 let html = containerDetailsTemplate(container.Data);
-                $("#containerDetails").append(html);                
+                $("#containerDetails").append(html);
 
                 CKEDITOR.replaceAll('htmlEditBox');
 
@@ -297,7 +401,15 @@ function LoadContainer(id) {
 
                 UpdatePriorityCounts();
 
-                $("#containerItems").children(".itemBlock:not(.addItem)").first().trigger("click");
+                var list = document.getElementById("containerItems");
+                Sortable.create(list, {
+                    draggable: ".itemBlock",
+                    onUpdate: function (evt/**Event*/) {
+                        UpdatePriorityCounts();
+                    }
+                });
+
+                $("#containerItems").children(".itemBlock").first().trigger("click");
             }
             else {
                 toastr["error"](container.Message);
@@ -320,6 +432,7 @@ function DeleteContainer(conName) {
                 toastr["success"]("Container delted!");
                 $("#containerDetails").html("");
                 UpdateContainerList();
+                $.modal.close();
             }
             else {
                 toastr["error"](data.Message);
@@ -341,8 +454,9 @@ function UpdateContainerName(conId, conName) {
             data = JSON.parse(result);
             if (data.Success) {
                 toastr["success"]("Container name updated!");
-                $("#containerDetailsAttributes #containerName").html(conName);
-                UpdateContainerList();
+                $("#containerDetails #containerName .containerNameBlock").first().text(conName);
+                UpdateContainerList(conName);
+                $.modal.close();
             }
             else {
                 toastr["error"](data.Message);
@@ -355,9 +469,3 @@ function UpdateContainerName(conId, conName) {
     });
 }
 
-function UpdateItemName(itemId) {
-    let itemNameHeader = $("#containerItemsAccordion").find("h3.itemName[data-item-id='" + itemId + "'] span.itemNameSpan");
-
-    itemNameHeader.html($("#formItemName").val());
-    $("#formItemName").value = "";
-}

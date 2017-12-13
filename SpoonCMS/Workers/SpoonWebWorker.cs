@@ -450,9 +450,8 @@ namespace SpoonCMS.Workers
         {
             ServiceResponse<string> respDelete = new ServiceResponse<string>();
             string conName = context.Request.Query["name"];
-            int conId;
 
-            if (int.TryParse(context.Request.Query["id"], out conId) && !String.IsNullOrEmpty(conName))
+            if (!String.IsNullOrEmpty(conName))
             {
                 SpoonDataWorker.DeleteContainer(conName);
 

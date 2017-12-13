@@ -1,8 +1,12 @@
 ﻿<script id="container-list-template" type="text/x-handlebars-template">
     {{#each this}}
-        <div class="containerItem truncate" data-container-id="{{Id}}"><i class="fa fa-play listIcon" aria-hidden="true"></i>{{Name}}</div>
+        <div class="containerItem truncate" data-container-id="{{Id}}" data-container-name="{{Name}}">
+            <i class="fa fa-play listIcon" aria-hidden="true"></i>
+            {{Name}}
+            <i class="fa fa-trash-o deleteContainer" data-container-id="{{Id}}" data-container-name="{{Name}}" aria-hidden="true"></i>
+        </div>
     {{/each}}
     <div id="containerListOptions">
-        <button class="addContainer saveButton">Add Container</button>
+        <div id="addContainer">+</div>
     </div>
 </script>

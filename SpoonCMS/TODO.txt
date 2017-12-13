@@ -1,4 +1,3 @@
 ﻿- update UI for admin
-- Sortable
-- Dialogs and saves
-- Deletes
+	- validate item names1
+	- Container name validation for add and rename.

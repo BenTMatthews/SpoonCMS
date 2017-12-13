@@ -289,8 +289,19 @@ namespace SpoonCMS.DataClasses
 
                     if (container != null)
                     {
-                        container.Name = conName;
-                        containers.Update(container);
+                        if (container.Name != conName) // Don't do anything, it's the same name we already have
+                        {
+                            var existingCon = containers.FindOne(x => x.Name.Equals(conName));
+                            if (existingCon == null)
+                            {
+                                container.Name = conName;
+                                containers.Update(container);
+                            }
+                            else
+                            {
+                                throw new NameExistsException("A container with that name already exists");
+                            }
+                        }
                     }
                     else
                     {
