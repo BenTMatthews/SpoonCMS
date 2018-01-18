@@ -291,7 +291,7 @@ namespace SpoonCMS.DataClasses
                     {
                         if (container.Name != conName) // Don't do anything, it's the same name we already have
                         {
-                            var existingCon = containers.FindOne(x => x.Name.Equals(conName));
+                            var existingCon = containers.FindOne(x => x.Name.Equals(conName)); //Make sure name isn't already taken
                             if (existingCon == null)
                             {
                                 container.Name = conName;

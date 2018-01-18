@@ -1,3 +1,4 @@
-﻿- update UI for admin
-	- validate item names1
-	- Container name validation for add and rename.
+﻿- Container name limit
+- Copntent name limit
+- content limit
+- Null checks
