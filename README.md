@@ -192,7 +192,7 @@ Once you select a container, the container's content items will show with a list
 
 The editor will show the content as an HTML WYSIWYG editor by default, but you can choose to work in the source. It is often recommended to code your markup in your IDE of choice, verify it, then paste it into the admin.
 
-You can save content items individually, or save them all and their order with the Save All $ order button.
+You can save content items individually, or save them all and their order within the conteiner using the "Save All & Order" button.
 
 From this page you can also sort the items at the bottom if you plan to use the container items in an ordered manner. 
 
