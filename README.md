@@ -180,6 +180,8 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 }
 ```
 
+## The Admin
+
 ## FAQs
 * "What if I user a big enterprise DB for my apps?"
     * Spoon will not interfere with that. The content calls, and Spoon as a whole, are design to not interfere with functionality.
