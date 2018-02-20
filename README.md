@@ -182,6 +182,21 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 
 ## The Admin
 
+The approach for the admin is to be as simple as possible, while not being bland. The example project has a basic template. Once you load the admin with the URL you specified, you will see the list of containers you have created on the left:
+
+![My image](Screens/load.JPG)
+
+Once you select a container, the container's content items will show with a list at the bottom.
+
+![My image](Screens/home.JPG)
+
+The editor will show the content as an HTML WYSIWYG editor by default, but you can choose to work in the source. It is often recommended to code your markup in your IDE of choice, verify it, then paste it into the admin.
+
+You can save content items individually, or save them all and their order with the Save All $ order button.
+
+From this page you can also sort the items at the bottom if you plan to use the container items in an ordered manner. 
+
+
 ## FAQs
 * "What if I user a big enterprise DB for my apps?"
     * Spoon will not interfere with that. The content calls, and Spoon as a whole, are design to not interfere with functionality.
