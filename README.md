@@ -1,5 +1,5 @@
 # SpoonCMS
-A lightweight .NET core CMS for page content - In Alpha (Just don't use it yet)
+A lightweight .NET core CMS for page content - In Beta
 
 ## Why would you use this?
 Mostly because you like coding in .Net, but want some flexibility in your content. For the longest time in .Net web dev, if you wanted content management you had to choose between an extremely complex CMS systems that felt like a language/platform unto itself, or deploy updates to html or content files everytime you wanted any update with little exception. So I built a very simple system to manage content (actual content) that did these key things:
@@ -203,11 +203,11 @@ From this page you can also sort the items at the bottom if you plan to use the 
 * "Can't I please store it somewhere else?"
     * Adding other storage options is on the roadmap. This is not a high priority currently based on user feedback, but Mongo is next to be considered.
 * "But I need features like creating routes, custom perms, on the fly templates..."
-    * All valid things to want, but Spoon is not built for that. Other larger CMS products like Orchard or Umbraco are great products that are built for large scale applications. Thats not the goal of this project.
+    * All valid things to want, but Spoon is not built for that. Other larger CMS products like Orchard or Umbraco are great products that are built for large CMS solutions that control the application completely. Thats not the goal of this project.
 * "You know this isn't actually a whole lot of work or magic, right?
     * Yes. Just trying to (lightly) formalize work I, and many peers, have had to do a bunch of different times so we never have to again.
 * "Okay there has to be SOME way to input content and access it dynamically with redeploying, right?"
-    * You can fake it, and I have on some projects. If you make a view, call it Custom, that simply frames a data block, you can have this where you want some dynamic content.
+    * You can fake it by passing the CustomData key as a route.
 ```
 @Html.Raw(ViewData["CustomData"])
 ```
@@ -253,10 +253,11 @@ This project is only possible thanks to others and their hard work:
 * [.NET core](https://github.com/dotnet/core)
 * [Lauren Kidwell Designs](http://www.laurenkidwell.design/)
 * [FontAwesome](https://github.com/FortAwesome/Font-Awesome)
+* [Sortable](http://rubaxa.github.io/Sortable/)
+
 
 ## ToDo
 
-- Redesign admin page (in progress, and badly needed)
 - MongoDB DataClass
 - SQLLite DataClass
 - Active date range
