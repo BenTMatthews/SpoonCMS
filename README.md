@@ -191,6 +191,8 @@ Once you select a container, the container's content items will show with a list
 
 The editor will show the content as an HTML WYSIWYG editor by default, but you can choose to (and commonly recommended) work in the source. Code your markup in your IDE of choice, verify it, then paste it into the admin.
 
+![My image](Screens/homeSource.JPG)
+
 You can save content items individually, or save them all and their order within the container using the "Save All & Order" button. Remember, if you save the order of the items, you are also saving all the `ContentItem` in the container as well.
 
 ## FAQs
