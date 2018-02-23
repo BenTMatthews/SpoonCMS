@@ -216,7 +216,6 @@ This project is only possible thanks to others and their hard work:
 * [CKEditor](https://github.com/ckeditor)
 * [toastr](https://github.com/CodeSeven/toastr)
 * [.NET core](https://github.com/dotnet/core)
-* [Lauren Kidwell Designs](http://www.laurenkidwell.design/)
 * [FontAwesome](https://github.com/FortAwesome/Font-Awesome)
 * [Sortable](http://rubaxa.github.io/Sortable/)
 
