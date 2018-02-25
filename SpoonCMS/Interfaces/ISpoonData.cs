@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SpoonCMS.Interfaces
 {
-    interface ISpoonData
+    public interface ISpoonData
     {
         Container GetContainer(string conName);
         Container GetContainer(int conId);

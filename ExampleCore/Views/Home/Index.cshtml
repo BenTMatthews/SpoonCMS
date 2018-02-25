@@ -1,21 +1,9 @@
-﻿
-@functions
-{
-    SpoonCMS.Classes.Container container = SpoonCMS.Workers.SpoonDataWorker.GetContainer("HomePage");
-    public string GetHtmlFromSpoon(string itemName)
-    {
-        return System.Net.WebUtility.HtmlDecode(container.GetItem(itemName).Value);
-    }
-}
-<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-
-    @*@Html.Raw(@GetHtmlFromSpoon("myCarousel"))*@
+﻿<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
     @Html.Raw(ViewData["Carousel"])
-
 </div>
 
 <div class="row">
-    @Html.Raw(@GetHtmlFromSpoon("rows"))
+    @Html.Raw(ViewData["rows"])
 </div>
 
 <script>

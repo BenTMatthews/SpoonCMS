@@ -34,6 +34,8 @@ namespace SpoonCMS.Workers
         public static bool RequireAuth { get; set; } = false;
         public static List<Claim> AuthClaims { get; set; } = new List<Claim>();
 
+        public static ISpoonData SpoonData;
+
         #region PageGeneration
 
         public static void BuildAdminPageDelegate(IApplicationBuilder app)
@@ -278,7 +280,7 @@ namespace SpoonCMS.Workers
         private static ServiceResponse<List<ContainerSkinny>> GetContainers()
         {
             ServiceResponse<List<ContainerSkinny>> respConsSkinny = new ServiceResponse<List<ContainerSkinny>>();
-            respConsSkinny.Data = SpoonDataWorker.GetAllContainers();
+            respConsSkinny.Data = SpoonData.GetAllContainers();
             respConsSkinny.Message = "Success";
             respConsSkinny.Success = true;
 
@@ -292,7 +294,7 @@ namespace SpoonCMS.Workers
             Container retVal = null;
             if (int.TryParse(context.Request.Query["id"], out id))
             {
-                retVal = SpoonDataWorker.GetContainer(id);
+                retVal = SpoonData.GetContainer(id);
 
                 respCon.Data = retVal;
                 respCon.Message = "Success";
@@ -340,7 +342,7 @@ namespace SpoonCMS.Workers
                     }
                 }
 
-                SpoonDataWorker.UpdateContainer(postedCon);
+                SpoonData.UpdateContainer(postedCon);
 
                 respSave.Data = "Success";
                 respSave.Message = "Success";
@@ -373,7 +375,7 @@ namespace SpoonCMS.Workers
 
                 ContentItem postedContent = JsonConvert.DeserializeObject<ContentItem>(contentString, settings);
                                
-                Container con = SpoonDataWorker.GetContainer(id);
+                Container con = SpoonData.GetContainer(id);
 
                 string itemKey = con.Items.FirstOrDefault(x => x.Value.Id == postedContent.Id).Key; //See if exists
                 if(!string.IsNullOrEmpty(itemKey))
@@ -383,7 +385,7 @@ namespace SpoonCMS.Workers
 
                 con.AddItem(postedContent);
 
-                SpoonDataWorker.UpdateContainer(con);
+                SpoonData.UpdateContainer(con);
 
                 respSave.Data = "Success";
                 respSave.Message = "Success";
@@ -406,7 +408,7 @@ namespace SpoonCMS.Workers
             if (!String.IsNullOrEmpty(conName))
             {
                 Container newCon = new Container(conName);
-                SpoonDataWorker.AddContainer(newCon);
+                SpoonData.AddContainer(newCon);
 
                 respCreate.Data = "Success";
                 respCreate.Message = "Success";
@@ -430,7 +432,7 @@ namespace SpoonCMS.Workers
 
             if (int.TryParse(context.Request.Query["id"], out conId) && !String.IsNullOrEmpty(conName))
             {
-                SpoonDataWorker.UpdateContainerName(conId, conName);
+                SpoonData.UpdateContainerName(conId, conName);
 
                 respEditName.Data = "Success";
                 respEditName.Message = "Success";
@@ -453,7 +455,7 @@ namespace SpoonCMS.Workers
 
             if (!String.IsNullOrEmpty(conName))
             {
-                SpoonDataWorker.DeleteContainer(conName);
+                SpoonData.DeleteContainer(conName);
 
                 respDelete.Data = "Success";
                 respDelete.Message = "Success";
@@ -474,26 +476,37 @@ namespace SpoonCMS.Workers
             bool retval = false;
             if (RequireAuth)
             {
-                AuthenticateResult auth = context.AuthenticateAsync().Result;
-
-                if (auth.Succeeded)
+                try
                 {
-                    var userClaims = auth.Principal.Claims.Select(claim => new { claim.Type, claim.Value }).ToArray();
-                    if (AuthClaims.Count != 0)
+                    AuthenticateResult auth = context.AuthenticateAsync().Result;
+
+                    if (auth.Succeeded)
                     {
-                        foreach (Claim claim in AuthClaims)
+                        var userClaims = auth.Principal.Claims.Select(claim => new { claim.Type, claim.Value }).ToArray();
+                        if (AuthClaims.Count != 0)
                         {
-                            if (userClaims.Any(x => x.Type == claim.Type && x.Value == claim.Value))
+                            foreach (Claim claim in AuthClaims)
                             {
-                                retval = true;
-                                break;
+                                if (userClaims.Any(x => x.Type == claim.Type && x.Value == claim.Value))
+                                {
+                                    retval = true;
+                                    break;
+                                }
                             }
                         }
+                        else
+                        {
+                            retval = true;
+                        }
                     }
-                    else
-                    {
-                        retval = true;
-                    }
+                }
+                catch(AggregateException aggEx)
+                {
+                    return false;
+                }
+                catch(Exception ex)
+                {
+                    return false;
                 }
             }
             else

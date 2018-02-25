@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.2.0</Version>
+    <Version>0.2.2</Version>
     <Authors>Ben Matthews</Authors>
     <Company />
     <Description>Lightweight page content management</Description>
@@ -11,8 +11,12 @@
     <RepositoryType>Github</RepositoryType>
     <PackageTags>CMS, .Net Core</PackageTags>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <PackageReleaseNotes>Alpha release</PackageReleaseNotes>
+    <PackageReleaseNotes>Beta release</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Workers\SpoonDataWorker.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Files\Admin.html" />

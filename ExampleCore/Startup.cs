@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SpoonCMS.DataClasses;
+using SpoonCMS.Interfaces;
 using SpoonCMS.Workers;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -20,12 +22,22 @@ namespace ExampleCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ISpoonData spoonData = new LiteDBData(@"Data\DB\");
+            SpoonWebWorker.AdminPath = "/adminControl";
+            SpoonWebWorker.SpoonData = spoonData;
+
+            //Will need to have some sort of user management system for this to work
+            SpoonWebWorker.RequireAuth = false;
+            SpoonWebWorker.AuthClaims = new List<Claim>() { new Claim(ClaimTypes.Role, "admins"), new Claim(ClaimTypes.Name, "John") };
+
+            services.AddSingleton<ISpoonData>(spoonData);
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -34,18 +46,9 @@ namespace ExampleCore
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-            }
-
-            
-
-            SpoonWebWorker.AdminPath = "/adminControl";
-            app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);            
-
-            SpoonDataWorker.connString = @"Data\DB\";
-
-            ////Will need to have some sort of user management system for this to work
-            //SpoonWebWorker.RequireAuth = true;
-            //SpoonWebWorker.AuthClaims = new List<Claim>() { new Claim(ClaimTypes.Role, "admins"), new Claim(ClaimTypes.Name, "John") };
+            }           
+                        
+            app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);                 
 
             app.UseStaticFiles();
 

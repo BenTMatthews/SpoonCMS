@@ -4,6 +4,7 @@ using System.Text;
 
 namespace SpoonCMS.DataClasses
 {
+    //For future proofing and config when we have other data providers.
     public class DBSettings
     {
         public string Type { get; set; } = "LiteDB";

@@ -8,7 +8,7 @@ using System.IO;
 
 namespace SpoonCMS.DataClasses
 {
-    class LiteDBData : ISpoonData
+    public class LiteDBData : ISpoonData
     {
 
         private string _connString { get; set; }

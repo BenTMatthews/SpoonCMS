@@ -2,15 +2,25 @@
 using Microsoft.AspNetCore.Mvc;
 using ExampleCore.Models;
 using SpoonCMS.Workers;
+using SpoonCMS.Interfaces;
+using SpoonCMS.Classes;
 
 namespace ExampleCore.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ISpoonData _spoonData;
+
+        public HomeController(ISpoonData spoonData)
+        {
+            _spoonData = spoonData;
+        }
         public IActionResult Index()
         {
-            ViewData["Title"] = SpoonDataWorker.GetContainer("HomePage").GetItem("pageTitle").Value;
-            ViewData["Carousel"] = SpoonDataWorker.GetContainer("HomePage").GetItem("myCarousel").Value;
+            Container con = _spoonData.GetContainer("HomePage");
+            ViewData["rows"] = con.GetItem("rows").Value;
+            ViewData["Title"] = con.GetItem("pageTitle").Value;
+            ViewData["Carousel"] = con.GetItem("myCarousel").Value;
             return View();
         }
 
