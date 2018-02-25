@@ -10,19 +10,52 @@ Mostly because you like coding in .Net, but want some flexibility in your conten
 This is the core of what SpoonCMS does: very simple page content management. No routing, no complex auth systems, just managing the markup on your page.
 
 ## Getting started
-Install the Nuget package: `Install-Package SpoonCMS -Version 0.2.2`
-Setup your routes to the admin page
+Install the Nuget package: `Install-Package SpoonCMS -Version 0.2.3`
+Setup your routes to the admin page and setup the injection of the SpoonData class
+
 ```
+ public void ConfigureServices(IServiceCollection services)
+{
+    ...
+    ISpoonData spoonData = new LiteDBData(@"Data\DB\");
+    SpoonWebWorker.AdminPath = "/admin";
+    SpoonWebWorker.SpoonData = spoonData;    
+
+    services.AddSingleton<ISpoonData>(spoonData);
+    ...
+}
+
 public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-    {
-        ...
-        SpoonWebWorker.AdminPath = "/admin";
-        app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);
-        ...
-    }
+{
+    ...
+   app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);  
+    ...
+}
 ```
 
-And you now have it installed and can access the admin page at the path you specificy.
+And you now have it installed and can access the admin page at the path you specificy. You will also have a reference to the SpoonData class to access your content like so
+
+```
+public class HomeController : Controller
+{
+    private readonly ISpoonData _spoonData;
+
+    public HomeController(ISpoonData spoonData)
+    {
+        _spoonData = spoonData;
+    }
+    public IActionResult Index()
+    {
+        HomePageViewModel vm = new HomePageViewModel();
+        Container con = _spoonData.GetContainer("HomePage");
+        vm.rows = con.GetItem("rows").Value;
+        vm.carousel = con.GetItem("myCarousel").Value;
+        
+        ViewData["Title"] = con.GetItem("pageTitle").Value;
+        return View(vm);
+    }
+...
+```
 
 ## Key Concepts
 
@@ -32,52 +65,31 @@ The `ContentItem` class is the basis for your content. For the most part, this w
 
 After you have stored content into a container, you would access it like so:
 ```
-SpoonDataWorker.GetContainer("ContainerName").GetItem("ContentItemName").Value;
+_spoonData.GetContainer("ContainerName").GetItem("ContentItemName").Value;
 ```
 
 Containers are best used to reflect content item collections that will be utilized together. Common use is to have a `Container` reflect a page, and then `ContentItem` that are within it represent those dynamic sections. For instance, loading the homepage using spoon. 
 
 ```
-Container container = SpoonDataWorker.GetContainer("HomePage");
+Container container = _spoonData.GetContainer("HomePage");
+PageViewModel vm = new PageViewModel();
 
-ViewData["HeaderContent"] = container.GetItem("HeaderContent").Value;
-ViewData["BodyCotentBlock"] = container.GetItem("BodyContentBlock").Value;
-ViewData["RightRail"] = container.GetItem("RightRailContent").Value;
-ViewData["LeftNav"] = container.GetItem("LeftNavLinks").Value;
-ViewData["Footer"] = container.GetItem("FooterContent").Value;
+vm.headerContent = container.GetItem("HeaderContent").Value;
+vm.bodyCotentBlock = container.GetItem("BodyContentBlock").Value;
+vm.rightRail = container.GetItem("RightRailContent").Value;
+vm.leftNav = container.GetItem("LeftNavLinks").Value;
+vm.footer = container.GetItem("FooterContent").Value;
 ```
 
 Now you can populate them on the view. Remember to use `@Html.Raw` since the html is stored encoded
 
 ```
 <body>
-    <div id="header-block">@Html.Raw(ViewData["HeaderContent"])</div>
-    <div id="body-copy">@Html.Raw(ViewData["BodyCotentBlock"])</div>
-    <div id="right-rail">@Html.Raw(ViewData["RightRail"])</div>
-    <div id="left-nav">@Html.Raw(ViewData["LeftNav"])</div>
-    <div id="footer">@Html.Raw(ViewData["Footer"])</div>
-</body>
-```
-## Some Examples and alternative cases
-
-#### Gathering content in the view
-The most common would be just to use the `ViewData` as shown above, but some have taken to keeping controllers skinny and using helper functions in the view. This works as well from within a view: 
-
-```
-@functions
-{
-    SpoonCMS.Classes.Container container = SpoonCMS.Workers.SpoonDataWorker.GetContainer("HomePage");
-    public string GetHtmlFromSpoon(string itemName)
-    {
-        return System.Net.WebUtility.HtmlDecode(container.GetItem(itemName).Value);
-    }
-}
-<body>
-    <div id="header-block">@Html.Raw(@GetHtmlFromSpoon("HeaderContent"))</div>
-    <div id="body-copy">@Html.Raw(@GetHtmlFromSpoon("BodyCotentBlock"))</div>
-    <div id="right-rail">@Html.Raw(@GetHtmlFromSpoon("RightRail"))</div>
-    <div id="left-nav">@Html.Raw(@GetHtmlFromSpoon("LeftNav"))</div>
-    <div id="footer">@Html.Raw(@GetHtmlFromSpoon("Footer"))</div>
+    <div id="header-block">@Html.Raw(Model.headerContent)</div>
+    <div id="body-copy">@Html.Raw(Model.bodyCotentBlock)</div>
+    <div id="right-rail">@Html.Raw(Model.rightRail)</div>
+    <div id="left-nav">@Html.Raw(Model.leftNav)</div>
+    <div id="footer">@Html.Raw(Model.footer)</div>
 </body>
 ```
 
@@ -85,31 +97,46 @@ The most common would be just to use the `ViewData` as shown above, but some hav
 There is a claims check that is built in to protect the admin. This just requires that the Auth Claim of the user trying to access the admin matches at least one claim in the `SpoonWebWorker.AuthClaims` collection:
 
 ```
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-    {
-        ...
-        //This requires the request content to the admin to be "Authenticated". If this is left to false
-        //No security checks will be done.
-        SpoonWebWorker.RequireAuth = true;
-        
-        //Core focuses on claims for identity, you can specify the type and value for the claim to allow
-        //If the collection is left empty, only the authenticated check will be done
-        //In this example, any users that have the role "admins" or any users that have the name "John" will have access
-        SpoonWebWorker.AuthClaims = new List<Claim>() { new Claim(ClaimTypes.Role, "admins"), new Claim(ClaimTypes.Name, "John") };
-        SpoonWebWorker.AdminPath = "/admin";
-        app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);
-        ...
-    }
+public void ConfigureServices(IServiceCollection services)
+{
+    ISpoonData spoonData = new LiteDBData(@"Data\DB\");
+    SpoonWebWorker.AdminPath = "/adminControl";
+    SpoonWebWorker.SpoonData = spoonData;
+
+    //Will need to have some sort of user management system for this to work
+    SpoonWebWorker.RequireAuth = true;
+    SpoonWebWorker.AuthClaims = new List<Claim>() { new Claim(ClaimTypes.Role, "admins"), new Claim(ClaimTypes.Name, "John") };
+
+    services.AddSingleton<ISpoonData>(spoonData);
+    services.AddMvc();
+}
 ```
 You can also create a controller and endpoint to generate the admin page and and handle the service calls, this changes our `Configure` a bit:
 
 ```
+public void ConfigureServices(IServiceCollection services)
+{
+    ISpoonData spoonData = new LiteDBData(@"Data\DB\");
+    SpoonWebWorker.AdminPath = "adminControl";
+    SpoonWebWorker.SpoonData = spoonData;
+
+    //Will need to have some sort of user management system for this to work
+    SpoonWebWorker.RequireAuth = true;
+    SpoonWebWorker.AuthClaims = new List<Claim>() { new Claim(ClaimTypes.Role, "admins"), new Claim(ClaimTypes.Name, "John") };
+
+    services.AddSingleton<ISpoonData>(spoonData);
+    services.AddMvc();
+}
+
 public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     {
         ...
+        //Not using the delag
+        //app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);     
+        
         //Note that when going to a controller instead of web delegate, you must remove the 
-        //leading '/' from the path. Get it together and standardize this MS!
-        SpoonWebWorker.AdminPath = "admin";
+        //leading '/' from the path in ConfigureServices. Get it together and standardize this MS!
+        
         app.UseMvc(routes =>
         {
             routes.MapRoute(
@@ -158,7 +185,7 @@ Through the admin you can determine ordering, and the highest priority can be de
 I could have a `Container` called "ProductPageContent" and include 3 `ContentItem` called "Normal", "GameDay", and "BigSale". You could have "Normal" as top priorty for everyday, change priority to "GameDay" if the local sportsball team is playing, and or make the top priorty `ContentItem` "BigSale" if you are trying to move more product that day. Your markup or code in your app would not have to change, simply call this in your controller
 
 ```
-ViewData["BodyCopy"] = SpoonDataWorker.GetContainer("ProductPageContent").GetItem().Value;
+ViewData["BodyCopy"] = _spoonData.GetContainer("ProductPageContent").GetItem().Value;
 ```
 
 and whichever you set as the high priority for that container in the admin will be what is returned.  
@@ -166,13 +193,13 @@ and whichever you set as the high priority for that container in the admin will 
 
 ## Where is the data stored?
 
-For the first iteration, all data will be stored in a [LiteDB](https://github.com/mbdavid/LiteDB) instance. It is a fantastic small document database that is light and portable. I subscribe to the idea that content storage should be kept away from app/user storage, and this reflects that. The default path will store it in Data\DB folder, but you can specify a different path on the Configure event like so:
+For the first iteration, all data will be stored in a [LiteDB](https://github.com/mbdavid/LiteDB) instance. It is a fantastic small document database that is light and portable. I subscribe to the idea that content storage should be kept away from app/user storage, and this reflects that. The default path will store it in Data\DB folder, but you can specify a different path on the ConfigureServices event like so:
 
 ```
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+public void ConfigureServices(IServiceCollection services)
 {
     ...
-    SpoonDataWorker.connString = @"MyFolder\Storage\Spoon";
+    ISpoonData spoonData = new LiteDBData(@"MyFolder\Storage\Spoon");
     ...
 }
 ```
