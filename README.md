@@ -1,7 +1,7 @@
 # SpoonCMS
 A lightweight .NET core CMS for page content - In Beta
 
-![NuGet](https://img.shields.io/nuget/v/SpoonCMS.svg)
+[![NuGet](https://img.shields.io/nuget/v/SpoonCMS.svg)](https://www.nuget.org/packages/SpoonCMS/)
 
 
 ## Why would you use this?
