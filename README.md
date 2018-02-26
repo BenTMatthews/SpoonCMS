@@ -233,7 +233,7 @@ You can save content items individually, or save them all and their order within
 * "But I need features like creating routes, custom perms, on the fly templates..."
     * All valid things to want, but Spoon is not built for that. Other larger CMS products like Orchard or Umbraco are great products that are built for large CMS solutions that control the application completely. Thats not the goal of this project.
 * "You know this actually really simple and direct right? It's not that fancy.
-    * Yes, and not pretending to be. Just trying to (lightly) formalize work I, and many peers, have had to do a bunch of different times so we never have to again. 
+    * Yes, and not pretending to be. The directness of the project is part of the appeal.
 
 
 ## Thank You
