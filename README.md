@@ -252,7 +252,6 @@ This project is only possible thanks to others and their hard work:
 
 ## ToDo
 
-- MongoDB DataClass
-- SQLLite DataClass
+- Postgres as a data source
 - Active date range
 - Enable/disable content Items
