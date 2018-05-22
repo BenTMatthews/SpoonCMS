@@ -130,13 +130,13 @@ public void ConfigureServices(IServiceCollection services)
     services.AddMvc();
 }
 ```
-You can also create a controller and endpoint to generate the admin page and and handle the service calls, this changes our `Configure` a bit:
+You can also create a controller and endpoint to generate the admin page and and handle the service calls. If you have some special auth attributes you want to use and not something built into claims, you can secure the controller you specify like any other. This changes our `Configure` a bit:
 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
     ISpoonData spoonData = new LiteDBData(@"Data\DB\");
-    SpoonWebWorker.AdminPath = "adminControl";
+    SpoonWebWorker.AdminPath = "adminControl"; //remove leading '/'
     SpoonWebWorker.SpoonData = spoonData;
 
     //Will need to have some sort of user management system for this to work
@@ -150,7 +150,7 @@ public void ConfigureServices(IServiceCollection services)
 public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     {
         ...
-        //Not using the delag
+        //Not using the delagate, commented out the line below to use our own controller
         //app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);     
         
         //Note that when going to a controller instead of web delegate, you must remove the 
@@ -185,7 +185,7 @@ namespace ExampleCore.Controllers
         [MyFancyAuthorizationAttribute]
         public IActionResult Admin()
         {
-            // Me must specifcy in the second parameter that this is for a controller, so set it to true.
+            // Me must specify in the second parameter that this is for a controller, so set it to true.
             return Content(SpoonWebWorker.GenerateResponseString(Request.HttpContext, true), "text/html");
         }
 
