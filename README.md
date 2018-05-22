@@ -59,6 +59,22 @@ public class HomeController : Controller
     }
 ...
 ```
+## The Admin
+
+The approach for the admin is to be as simple as possible, without the common instituational feel some CMS give off. The example project has example data and will redirect you to the admin on load. Here I have recreated and broke down the sample MVP project that comes with VS. You will see the list of containers you have created on the left:
+
+![My image](Screens/load.JPG)
+
+Once you select a container, the container's content items will show with a list at the bottom and are orderable.
+
+![My image](Screens/home.JPG)
+
+The editor will show the content as an HTML WYSIWYG editor by default, but you can choose to (and commonly recommended) work in the source. Code your markup in your IDE of choice, verify it, then paste it into the admin.
+
+![My image](Screens/homeSource.JPG)
+
+You can save content items individually, or save them all and their order within the container using the "Save All & Order" button. Remember, if you save the order of the items, you are also saving all the `ContentItem` in the container as well.
+
 
 ## Key Concepts
 
@@ -208,22 +224,6 @@ public void ConfigureServices(IServiceCollection services)
 ```
 
 Folders and database will be generated at this location if it is not found.
-
-## The Admin
-
-The approach for the admin is to be as simple as possible, without the common instituational feel some CMS give off. The example project has example data and will redirect you to the admin on load. You will see the list of containers you have created on the left:
-
-![My image](Screens/load.JPG)
-
-Once you select a container, the container's content items will show with a list at the bottom and are orderable.
-
-![My image](Screens/home.JPG)
-
-The editor will show the content as an HTML WYSIWYG editor by default, but you can choose to (and commonly recommended) work in the source. Code your markup in your IDE of choice, verify it, then paste it into the admin.
-
-![My image](Screens/homeSource.JPG)
-
-You can save content items individually, or save them all and their order within the container using the "Save All & Order" button. Remember, if you save the order of the items, you are also saving all the `ContentItem` in the container as well.
 
 ## FAQs
 * "What if I user a big enterprise DB for my apps?"
