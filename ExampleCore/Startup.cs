@@ -26,7 +26,7 @@ namespace ExampleCore
             //ISpoonData spoonData = new LiteDBData(connString);
 
             string connString = Configuration["LiteDBSettings:ConnectionString"];
-            ISpoonData spoonData = new LiteDBData(connString);
+            ISpoonData spoonData = new PostGresData(connString);
 
             SpoonWebWorker.AdminPath = "/adminControl";
             SpoonWebWorker.SpoonData = spoonData;
