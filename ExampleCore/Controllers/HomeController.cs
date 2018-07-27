@@ -4,6 +4,7 @@ using ExampleCore.Models;
 using SpoonCMS.Workers;
 using SpoonCMS.Interfaces;
 using SpoonCMS.Classes;
+using ExampleCore.ViewModel;
 
 namespace ExampleCore.Controllers
 {
@@ -17,11 +18,12 @@ namespace ExampleCore.Controllers
         }
         public IActionResult Index()
         {
+            HomePageViewModel vm = new HomePageViewModel();
             Container con = _spoonData.GetContainer("HomePage");
-            ViewData["rows"] = con.GetItem("rows").Value;
+            vm.rows = con.GetItem("rows").Value;
             ViewData["Title"] = con.GetItem("pageTitle").Value;
-            ViewData["Carousel"] = con.GetItem("myCarousel").Value;
-            return View();
+            vm.carousel = con.GetItem("myCarousel").Value;
+            return View(vm);
         }
 
         public IActionResult About()

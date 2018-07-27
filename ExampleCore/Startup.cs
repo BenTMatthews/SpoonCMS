@@ -22,7 +22,12 @@ namespace ExampleCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            ISpoonData spoonData = new LiteDBData(@"Data\DB\");
+            //string connString = Configuration["LiteDBSettings:ConnectionString"];            
+            //ISpoonData spoonData = new LiteDBData(connString);
+
+            string connString = Configuration["LiteDBSettings:ConnectionString"];
+            ISpoonData spoonData = new LiteDBData(connString);
+
             SpoonWebWorker.AdminPath = "/adminControl";
             SpoonWebWorker.SpoonData = spoonData;
 

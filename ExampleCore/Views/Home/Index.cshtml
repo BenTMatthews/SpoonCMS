@@ -1,9 +1,10 @@
-﻿<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-    @Html.Raw(ViewData["Carousel"])
+﻿@model ExampleCore.ViewModel.HomePageViewModel
+<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
+    @Html.Raw(Model.carousel)
 </div>
 
 <div class="row">
-    @Html.Raw(ViewData["rows"])
+    @Html.Raw(Model.rows)
 </div>
 
 <script>
