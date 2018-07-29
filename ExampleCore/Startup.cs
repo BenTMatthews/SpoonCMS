@@ -7,6 +7,7 @@ using SpoonCMS.Interfaces;
 using SpoonCMS.Workers;
 using System.Collections.Generic;
 using System.Security.Claims;
+using static SpoonCMS.DataClasses.Enums;
 
 namespace ExampleCore
 {
@@ -22,11 +23,13 @@ namespace ExampleCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //string connString = Configuration["LiteDBSettings:ConnectionString"];            
-            //ISpoonData spoonData = new LiteDBData(connString);
-
+            // LiteDB path to store file, for instance: "Data\\Spoon\\"   
             string connString = Configuration["LiteDBSettings:ConnectionString"];
-            ISpoonData spoonData = new PostGresData(connString);
+            ISpoonData spoonData = SpoonWebWorker.GenerateDataWorker(SpoonDBType.LiteDB, connString);
+
+            //Postgres DB connection string, for instance: "database=xxxx; host=xxx.xxx.xxx.xxx.com; username=xxx; password=xxx; SslMode=Prefer; port=1234;"
+            //string connString = Configuration["PostGresDBSettings:ConnectionString"];
+            //ISpoonData spoonData = SpoonWebWorker.GenerateDataWorker(SpoonDBType.PostGres, connString);
 
             SpoonWebWorker.AdminPath = "/adminControl";
             SpoonWebWorker.SpoonData = spoonData;

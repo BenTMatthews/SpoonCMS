@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SpoonCMS.Classes;
+using SpoonCMS.DataClasses;
 using SpoonCMS.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static SpoonCMS.DataClasses.Enums;
 
 namespace SpoonCMS.Workers
 {
@@ -35,6 +37,32 @@ namespace SpoonCMS.Workers
         public static List<Claim> AuthClaims { get; set; } = new List<Claim>();
 
         public static ISpoonData SpoonData;
+
+        #region DataGeneration
+
+        public static ISpoonData GenerateDataWorker(SpoonDBType dbType, string connString)
+        {
+            ISpoonData dataWorker;
+
+            switch (dbType)
+            {
+                case SpoonDBType.LiteDB:
+                    dataWorker = new LiteDBData(connString);
+                    break;
+
+                case SpoonDBType.PostGres:
+                    dataWorker = new PostGresData(connString);
+                    break;
+
+                default:
+                    dataWorker = new LiteDBData();
+                    break;
+            }
+
+            return dataWorker;
+        }
+
+        #endregion
 
         #region PageGeneration
 

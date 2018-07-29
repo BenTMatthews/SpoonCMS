@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 using Marten;
 using Marten.Services;
+using System.Linq;
 
 namespace SpoonCMS.DataClasses
 {
@@ -33,12 +34,13 @@ namespace SpoonCMS.DataClasses
         {
             try
             {
-                using (var db = new LiteDatabase(_connString))
+                using (var session = _store.LightweightSession())
                 {
-                    var containers = db.GetCollection<Container>("Containers");
-                    Container existingCon = containers.FindOne(x => x.Name.Equals(conName));
+                    Container container = session.Query<Container>()
+                                            .Where(x => x.Name == conName)
+                                            .FirstOrDefault();
 
-                    return existingCon;
+                    return container;
                 }
             }
             catch (Exception)
@@ -51,12 +53,13 @@ namespace SpoonCMS.DataClasses
         {
             try
             {
-                using (var db = new LiteDatabase(_connString))
+                using (var session = _store.LightweightSession())
                 {
-                    var containers = db.GetCollection<Container>("Containers");
-                    Container existingCon = containers.FindOne(x => x.Id.Equals(conId));
+                    Container container = session.Query<Container>()
+                                            .Where(x => x.Id == conId)
+                                            .FirstOrDefault();
 
-                    return existingCon;
+                    return container;
                 }
             }
             catch (Exception)
@@ -65,16 +68,16 @@ namespace SpoonCMS.DataClasses
             }
         }
 
-        public List<ContainerSkinny> GetAllContainers()
+        public List<ContainerSkinny> GetAllContainers() //Need to make this lighterweight, this could get heavy
         {
             List<ContainerSkinny> retList = new List<ContainerSkinny>();
             try
             {
-                using (var db = new LiteDatabase(_connString))
+                using (var session = _store.LightweightSession())
                 {
-                    var containers = db.GetCollection<Container>("Containers");
-                    
-                    foreach(Container con in containers.FindAll())
+                    var containers = session.Query<Container>();
+
+                    foreach (Container con in containers)
                     {
                         retList.Add(con.GetSkinny());
                     }
@@ -92,19 +95,21 @@ namespace SpoonCMS.DataClasses
         {
             try
             {
-                using (var db = new LiteDatabase(_connString))
+                using (var session = _store.LightweightSession())
                 {
-                    var containers = db.GetCollection<Container>("Containers");
-                    var existingCon = containers.FindOne(x => x.Name.Equals(container.Name));
+                    bool isFound = session.Query<Container>()
+                                        .Where(x => x.Name == container.Name)
+                                        .Any();
 
-                    if (existingCon == null)
+                    if (!isFound)
                     {
-                        containers.Insert(container);
+                        session.Store<Container>(container);
+                        session.SaveChanges();
                     }
                     else
+                    {
                         throw new NameExistsException("A container with that name already exists");
-
-                    containers.EnsureIndex(x => x.Name);
+                    }
                 }
             }
             catch(Exception)
@@ -117,10 +122,12 @@ namespace SpoonCMS.DataClasses
         {
             try
             {
-                using (var db = new LiteDatabase(_connString))
+                using (var session = _store.LightweightSession())
                 {
-                    var containers = db.GetCollection<Container>("Containers");
-                    var existingCon = containers.FindOne(x => x.Id.Equals(container.Id));
+                    var existingCon = session.Query<Container>()
+                                            .Where(x => x.Id == container.Id)
+                                            .FirstOrDefault();
+
 
                     if (existingCon == null)
                     {
@@ -132,8 +139,8 @@ namespace SpoonCMS.DataClasses
                         existingCon.Active = container.Active;
                         existingCon.Items = container.Items;
 
-                        containers.Update(container);
-                        containers.EnsureIndex(x => x.Name);
+                        session.Update<Container>(existingCon);
+                        session.SaveChanges();
                     }                    
                 }
             }
@@ -147,10 +154,21 @@ namespace SpoonCMS.DataClasses
         {
             try
             {
-                using (var db = new LiteDatabase(_connString))
+                using(var session = _store.LightweightSession())
                 {
-                    var containers = db.GetCollection<Container>("Containers");
-                    containers.Delete((Query.EQ("Name", conName)));
+                    Container container = session.Query<Container>()
+                                            .Where(x => x.Name == conName)
+                                            .FirstOrDefault();
+
+                    if (container != null)
+                    {
+                        session.Delete(container);
+                        session.SaveChanges();
+                    }
+                    else
+                    {
+                        throw new ItemDoesNotExistException("Container not found");
+                    }
                 }
             }
             catch(Exception)
@@ -164,17 +182,19 @@ namespace SpoonCMS.DataClasses
             try
             {
 
-                using (var db = new LiteDatabase(_connString))
+                using (var session = _store.LightweightSession())
                 {
-                    var containers = db.GetCollection<Container>("Containers");
-                    Container container = containers.FindOne(x => x.Name.Equals(conName));
+                    Container container = session.Query<Container>()
+                                            .Where(x => x.Name == conName)
+                                            .FirstOrDefault();
 
                     if (container != null)
                     {
                         if(!container.Items.ContainsKey(item.Name))
                         {
                             container.Items.Add(item.Name, item);
-                            containers.Update(container);
+                            session.Update<Container>(container);
+                            session.SaveChanges();
                         }    
                         else
                         {
@@ -198,10 +218,11 @@ namespace SpoonCMS.DataClasses
             try
             {
 
-                using (var db = new LiteDatabase(_connString))
+                using (var session = _store.LightweightSession())
                 {
-                    var containers = db.GetCollection<Container>("Containers");
-                    Container container = containers.FindOne(x => x.Name.Equals(conName));
+                    Container container = session.Query<Container>()
+                                            .Where(x => x.Name == conName)
+                                            .FirstOrDefault();
 
                     if (container != null)
                     {
@@ -212,7 +233,8 @@ namespace SpoonCMS.DataClasses
                             container.Items[item.Name].EndDate = item.EndDate;
                             container.Items[item.Name].Value = item.Value;
 
-                            containers.Update(container);
+                            session.Update<Container>(container);
+                            session.SaveChanges();
                         }
                         else
                         {
@@ -236,16 +258,18 @@ namespace SpoonCMS.DataClasses
             try
             {
 
-                using (var db = new LiteDatabase(_connString))
+                using (var session = _store.LightweightSession())
                 {
-                    var containers = db.GetCollection<Container>("Containers");
-                    Container container = containers.FindOne(x => x.Name.Equals(conName));
+                    Container container = session.Query<Container>()
+                                            .Where(x => x.Name == conName)
+                                            .FirstOrDefault();
 
                     if (container != null)
                     {
                         container.Items.Remove(itemName);
 
-                        containers.Update(container);
+                        session.Update<Container>(container);
+                        session.SaveChanges();
                     }
                     else
                     {
@@ -263,20 +287,25 @@ namespace SpoonCMS.DataClasses
         {
             try
             {
-                using (var db = new LiteDatabase(_connString))
+                using (var session = _store.LightweightSession())
                 {
-                    var containers = db.GetCollection<Container>("Containers");
-                    Container container = containers.FindOne(x => x.Id.Equals(conId));
+                    Container container = session.Query<Container>()
+                                            .Where(x => x.Id == conId)
+                                            .FirstOrDefault();
 
                     if (container != null)
                     {
                         if (container.Name != conName) // Don't do anything, it's the same name we already have
                         {
-                            var existingCon = containers.FindOne(x => x.Name.Equals(conName)); //Make sure name isn't already taken
+                            var existingCon = session.Query<Container>()   //Make sure name isn't already taken
+                                                .Where(x => x.Name == conName)
+                                                .FirstOrDefault(); 
+
                             if (existingCon == null)
                             {
                                 container.Name = conName;
-                                containers.Update(container);
+                                session.Update<Container>(container);
+                                session.SaveChanges();
                             }
                             else
                             {

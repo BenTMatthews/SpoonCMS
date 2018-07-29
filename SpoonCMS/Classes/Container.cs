@@ -1,4 +1,5 @@
-﻿using SpoonCMS.Exceptions;
+﻿using Newtonsoft.Json;
+using SpoonCMS.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,11 @@ namespace SpoonCMS.Classes
         private const int _maxCount = 100;
 
         public int Id { get; set; }
+
+        [JsonProperty("Items")]
         private Dictionary<string, ContentItem> _items { get; set; } = new Dictionary<string, ContentItem>();
+
+        [JsonIgnore]
         public Dictionary<string, ContentItem> Items
         {
             get

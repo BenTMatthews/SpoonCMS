@@ -182,6 +182,7 @@ function AddItemToContainer() {
 
     $("#containerDetailsAttributes").append(htmlEditor);
     CKEDITOR.replace(itemObj.Id).config.allowedContent = true;
+    CKEDITOR.instances[itemObj.Id].config.autoParagraph = false;
     //CKEDITOR.instances[itemObj.Id].config.startupMode = 'source'
 
     $("#containerItems").append(htmlBlock);
@@ -396,6 +397,7 @@ function LoadContainer(id) {
 
                 for (name in CKEDITOR.instances) {
                     CKEDITOR.instances[name].config.allowedContent = true;
+                    CKEDITOR.instances[name].config.autoParagraph = false;
                     //CKEDITOR.instances[name].config.startupMode = 'source';
                 }
 
