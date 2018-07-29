@@ -14,7 +14,7 @@ Mostly because you like coding in .Net, but want some flexibility in your conten
 This is the core of what SpoonCMS does: very simple page content management. No routing, no complex auth systems, just managing the markup on your page.
 
 ## Getting started
-Install the Nuget package: `Install-Package SpoonCMS -Version 1.0.0`
+Install the Nuget package: `Install-Package SpoonCMS -Version 1.0.1`
 Setup your routes to the admin page and setup the injection of the SpoonData class
 
 ```
