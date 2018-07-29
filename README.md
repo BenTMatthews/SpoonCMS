@@ -1,28 +1,30 @@
 # SpoonCMS
-A lightweight .NET core CMS for page content - In Beta
+A lightweight .NET core CMS for page content
 
 [![NuGet](https://img.shields.io/nuget/v/SpoonCMS.svg)](https://www.nuget.org/packages/SpoonCMS/) [![Join the chat at https://gitter.im/BenTMatthews/SpoonCMS](https://badges.gitter.im/BenTMatthews/SpoonCMS.svg)](https://gitter.im/BenTMatthews/SpoonCMS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 ## Why would you use this?
 Mostly because you like coding in .Net, but want some flexibility in your content. For the longest time in .Net web dev, if you wanted content management you had to choose between an extremely complex CMS systems that felt like a language/platform unto itself, or deploy updates to html or content files everytime you wanted any update with little exception. So I built a very simple system to manage content (actual content) that did these key things:
-- Easy to integrate (5 lines of code for base implementation)
+- Easy to integrate (less than 10 lines of code for base implementation)
 - Simple conceptually (You store HTML, you get HTML out)
 - Let's me code in .Net without impediment
+- Can use LiteDB or Postgres as a data source
 
 This is the core of what SpoonCMS does: very simple page content management. No routing, no complex auth systems, just managing the markup on your page.
 
 ## Getting started
-Install the Nuget package: `Install-Package SpoonCMS -Version 0.2.3`
+Install the Nuget package: `Install-Package SpoonCMS -Version 1.0.0`
 Setup your routes to the admin page and setup the injection of the SpoonData class
 
 ```
  public void ConfigureServices(IServiceCollection services)
 {
     ...
-    ISpoonData spoonData = new LiteDBData(@"Data\DB\");
-    SpoonWebWorker.AdminPath = "/admin";
-    SpoonWebWorker.SpoonData = spoonData;    
+    string connString = @"Data\DB\";
+    ISpoonData spoonData = SpoonWebWorker.GenerateDataWorker(SpoonDBType.LiteDB, connString);
+    SpoonWebWorker.AdminPath = "/adminControl";
+    SpoonWebWorker.SpoonData = spoonData;
 
     services.AddSingleton<ISpoonData>(spoonData);
     ...
@@ -36,7 +38,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 }
 ```
 
-And you now have it installed and can access the admin page at the path you specificy. You will also have a reference to the SpoonData class to access your content like so
+And you now have it installed and can access the admin page at the path you specificy. You will also have a reference to the SpoonData class using dependency injection to access your content like so
 
 ```
 public class HomeController : Controller
@@ -197,9 +199,9 @@ Now we can access our admin page at /admin like before but with the controller i
 
 Note that all auth actions you define will be for admin page and api requests for the spoon admin.
 
-#### But I need a LITTLE logic to my content
+#### A LITTLE logic to content - Ordering
 
-Through the admin you can determine ordering, and the highest priority can be determined in admin. This is done calling `Container.GetItem();` without specifying a `ContentItem` name as a parameter. You can order `ContentItem` from highest to lowest as left to right, top to bottom. A scenario for this: 
+Through the admin you can determine ordering, and the highest priority can be determined in admin. This is done calling `Container.GetItem();` without specifying a `ContentItem` name as a parameter. You can order `ContentItem` from highest to lowest as left to right, top to bottom in the admin panel with drag and drop. A scenario for this: 
 
 I could have a `Container` called "ProductPageContent" and include 3 `ContentItem` called "Normal", "GameDay", and "BigSale". You could have "Normal" as top priorty for everyday, change priority to "GameDay" if the local sportsball team is playing, and or make the top priorty `ContentItem` "BigSale" if you are trying to move more product that day. Your markup or code in your app would not have to change, simply call this in your controller
 
@@ -212,7 +214,9 @@ and whichever you set as the high priority for that container in the admin will 
 
 ## Where is the data stored?
 
-For the first iteration, all data will be stored in a [LiteDB](https://github.com/mbdavid/LiteDB) instance. It is a fantastic small document database that is light and portable. I subscribe to the idea that content storage should be kept away from app/user storage, and this reflects that. The default path will store it in Data\DB folder, but you can specify a different path on the ConfigureServices event like so:
+The current 2 options are using [LiteDB](https://github.com/mbdavid/LiteDB) or Postgres using [Marten](https://github.com/jasperfx/marten). When you create the dataworker in startup, you can specify the SpoonDBType, and the connection string for Postgres, or the path for LiteDB. Examples for both can be found in the sample project.
+
+An example using LiteDB:
 
 ```
 public void ConfigureServices(IServiceCollection services)
@@ -223,18 +227,13 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-Folders and database will be generated at this location if it is not found.
-
 ## FAQs
 * "What if I user a big enterprise DB for my apps?"
     * Spoon will not interfere with that. The content calls, and Spoon as a whole, are design to not interfere with functionality.
 * "Can't I please store it somewhere else?"
-    * Adding other storage options is on the roadmap. This is not a high priority currently based on a small amount of user feedback, but Postgres is next to be considered.
+    * Adding other storage options is on the roadmap. This is not a high priority currently based on a small amount of user feedback, but other databases that support JSON/document storage are being considered.
 * "But I need features like creating routes, custom perms, on the fly templates..."
     * All valid things to want, but Spoon is not built for that. Other larger CMS products like Orchard or Umbraco are great products that are built for large CMS solutions that control the application completely. Thats not the goal of this project.
-* "You know this actually really simple and direct right? It's not that fancy.
-    * Yes, and not pretending to be. The directness of the project is part of the appeal.
-
 
 ## Thank You
 
@@ -248,10 +247,13 @@ This project is only possible thanks to others and their hard work:
 * [.NET core](https://github.com/dotnet/core)
 * [FontAwesome](https://github.com/FortAwesome/Font-Awesome)
 * [Sortable](http://rubaxa.github.io/Sortable/)
+* [Marten](https://github.com/jasperfx/marten)
 
 
-## ToDo
+## Release Notes
 
-- Postgres as a data source
-- Active date range
-- Enable/disable content Items
+# 1.0
+- Added postgres support
+- Updated dependencies
+- Improved worker generation
+- General cleanup and bug fixes.
