@@ -16,28 +16,18 @@ namespace ExampleCore.Controllers
         {
             _spoonData = spoonData;
         }
+
         public IActionResult Index()
         {
-            HomePageViewModel vm = new HomePageViewModel();
-            Container con = _spoonData.GetContainer("HomePage");
-            vm.rows = con.GetItem("rows").Value;
-            ViewData["Title"] = con.GetItem("pageTitle").Value;
-            vm.carousel = con.GetItem("myCarousel").Value;
-            return View(vm);
-        }
+            HomePageViewModel viewModel = new HomePageViewModel();
+            Container container = _spoonData.GetContainer("HomePage");
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
+            viewModel.rows = container.GetItem("rows").Value;
 
-            return View();
-        }
+            ViewData["Title"] = container.GetItem("pageTitle").Value;
+            viewModel.carousel = container.GetItem("myCarousel").Value;
 
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            return View(viewModel);
         }
 
         public IActionResult Error()
