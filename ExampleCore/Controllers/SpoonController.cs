@@ -10,6 +10,5 @@ namespace ExampleCore.Controllers
         {
             return Content(SpoonWebWorker.GenerateResponseString(Request.HttpContext, true), "text/html");
         }
-
     }
 }

@@ -1,10 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System.Linq;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ExampleCore.Models;
 using SpoonCMS.Workers;
 using SpoonCMS.Interfaces;
 using SpoonCMS.Classes;
 using ExampleCore.ViewModel;
+using ExampleCore.SpoonCMSExtensions;
 
 namespace ExampleCore.Controllers
 {
@@ -16,33 +18,35 @@ namespace ExampleCore.Controllers
         {
             _spoonData = spoonData;
         }
-        public IActionResult Index()
+
+        [HttpGet("{container}")]
+        public IActionResult Index(string container)
         {
-            HomePageViewModel vm = new HomePageViewModel();
-            Container con = _spoonData.GetContainer("HomePage");
-            vm.rows = con.GetItem("rows").Value;
-            ViewData["Title"] = con.GetItem("pageTitle").Value;
-            vm.carousel = con.GetItem("myCarousel").Value;
-            return View(vm);
-        }
+            //TODO: If !container redirect to this action for homepage
+            //HomePageViewModel viewModel = new HomePageViewModel();
+            Container _container = _spoonData.GetContainer(container);
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
+            var title = _container.GetTitle();
+            SetTitle(title);
+            SetMenuItems();
 
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            var items = _container.GetAllItems();
+            return View(items);
         }
 
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private void SetTitle(string title)
+        {
+            ViewBag.title = title;
+        }
+        private void SetMenuItems()
+        {
+            var menuItems = _spoonData.GetAllContainers().Select(x => x.Name).ToArray();
+            ViewBag.menuItems = menuItems;
         }
     }
 }

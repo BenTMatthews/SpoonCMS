@@ -24,7 +24,7 @@ namespace ExampleCore
         public void ConfigureServices(IServiceCollection services)
         {
             // LiteDB path to store file, for instance: "Data\\Spoon\\"   
-            string connString = Configuration["LiteDBSettings:ConnectionString"];
+            string connString = "Data\\Spoon\\";
             ISpoonData spoonData = SpoonWebWorker.GenerateDataWorker(SpoonDBType.LiteDB, connString);
 
             //Postgres DB connection string, for instance: "database=xxxx; host=xxx.xxx.xxx.xxx.com; username=xxx; password=xxx; SslMode=Prefer; port=1234;"
@@ -69,9 +69,10 @@ namespace ExampleCore
 
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    //template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{container?}");
 
-                routes.MapRoute(
+            routes.MapRoute(
                     name: "Custom",
                     template:"{*AllValues}",
                     defaults: new { controller = "Custom", action = "Custom" });

@@ -62,6 +62,18 @@ namespace SpoonCMS.Classes
             }
         }
 
+        public ContentItem[] GetAllItems()
+        {
+            if (_items.Any())
+            {
+                return _items.Select(x => x.Value).ToArray();
+            }
+            else
+            {
+                return new ContentItem[] { new ContentItem() };
+            }
+        }
+
         /// <summary>
         /// Get an item from the container that matches the specified name
         /// </summary>
@@ -69,7 +81,14 @@ namespace SpoonCMS.Classes
         /// <returns>Item matching the name provided</returns>
         public ContentItem GetItem(string itemName)
         {
-            return _items[itemName];
+            if (_items.ContainsKey(itemName))
+            {
+                return _items[itemName];
+            }
+            else
+            {
+                return new ContentItem() { Name = itemName };
+            }
         }
 
         /// <summary>
@@ -78,7 +97,14 @@ namespace SpoonCMS.Classes
         /// <returns>first item stored in the collection</returns>
         public ContentItem GetItem()
         {
-            return Items.First().Value;
+            if (Items.Any())
+            {
+                return Items.First().Value;
+            }
+            else
+            {
+                return new ContentItem();
+            }
         }
 
         /// <summary>
