@@ -16,7 +16,7 @@ namespace ExampleCore.Controllers
 
         public IActionResult Custom()
         {
-            //removing leading slash
+            //Removes leading slash
             string id = Request.Path.Value.Remove(0,1);
             if (!string.IsNullOrEmpty(id))
             {

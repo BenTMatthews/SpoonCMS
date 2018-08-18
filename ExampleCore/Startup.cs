@@ -69,9 +69,10 @@ namespace ExampleCore
 
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    //template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{container?}");
 
-                routes.MapRoute(
+            routes.MapRoute(
                     name: "Custom",
                     template:"{*AllValues}",
                     defaults: new { controller = "Custom", action = "Custom" });

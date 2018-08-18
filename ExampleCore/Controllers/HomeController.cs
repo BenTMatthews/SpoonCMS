@@ -1,10 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System.Linq;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ExampleCore.Models;
 using SpoonCMS.Workers;
 using SpoonCMS.Interfaces;
 using SpoonCMS.Classes;
 using ExampleCore.ViewModel;
+using ExampleCore.SpoonCMSExtensions;
 
 namespace ExampleCore.Controllers
 {
@@ -17,22 +19,34 @@ namespace ExampleCore.Controllers
             _spoonData = spoonData;
         }
 
-        public IActionResult Index()
+        [HttpGet("{container}")]
+        public IActionResult Index(string container)
         {
-            HomePageViewModel viewModel = new HomePageViewModel();
-            Container container = _spoonData.GetContainer("HomePage");
+            //TODO: If !container redirect to this action for homepage
+            //HomePageViewModel viewModel = new HomePageViewModel();
+            Container _container = _spoonData.GetContainer(container);
 
-            viewModel.rows = container.GetItem("rows").Value;
+            var title = _container.GetTitle();
+            SetTitle(title);
+            SetMenuItems();
 
-            ViewData["Title"] = container.GetItem("pageTitle").Value;
-            viewModel.carousel = container.GetItem("myCarousel").Value;
-
-            return View(viewModel);
+            var items = _container.GetAllItems();
+            return View(items);
         }
 
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private void SetTitle(string title)
+        {
+            ViewBag.title = title;
+        }
+        private void SetMenuItems()
+        {
+            var menuItems = _spoonData.GetAllContainers().Select(x => x.Name).ToArray();
+            ViewBag.menuItems = menuItems;
         }
     }
 }
