@@ -62,6 +62,12 @@ namespace SpoonCMS.Classes
             }
         }
 
+        public ContentItem[] GetAllItems()
+        {
+            return _items.Select(x => x.Value).ToArray();
+        }
+
+        //TODO: Add NULL check
         /// <summary>
         /// Get an item from the container that matches the specified name
         /// </summary>
