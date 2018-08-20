@@ -10,26 +10,33 @@ namespace SpoonCMS.Classes
     {
         public Guid Id { get; set; }
         public Stream Value { get; set; }
-        public bool Active { get; set; } = true;
-        public DateTime BeginDate { get; set; } = DateTime.MinValue;
-        public DateTime EndDate { get; set; } = DateTime.MaxValue;
-        public DateTime Created { get; } = DateTime.Now;
+        public bool Active { get; set; } 
+        public DateTime BeginDate { get; set; } 
+        public DateTime EndDate { get; set; } 
+        public DateTime Created { get; } 
         public String Name { get; set; }
 
         object IItem.Value
         {
-            get { return this.Value; }
-            set { this.Value = (Stream)value; }
+            get {
+                return this.Value;
+            }
+            set {
+                this.Value = (Stream)value;
+            }
         }
 
         public FileItem()
         {
             Id = Guid.NewGuid();
+            Active = true;
+            Created = DateTime.Now;
+            BeginDate = DateTime.MinValue;
+            EndDate = DateTime.MaxValue;
         }
 
-        public FileItem(string name)
+        public FileItem(string name) : this()
         {
-            Id = Guid.NewGuid();
             Name = name;
         }
     }
