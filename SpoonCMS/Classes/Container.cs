@@ -16,6 +16,18 @@ namespace SpoonCMS.Classes
         public DateTime Created { get; }
         public string Name { get; set; }
 
+        public Container()
+        {
+            Active = true;
+            Created = DateTime.Now;
+            _items = new Dictionary<string, ContentItem>();
+        }
+
+        public Container(string Name) : this()
+        {
+            this.Name = Name;
+        }
+
         [JsonIgnore]
         public Dictionary<string, ContentItem> Items
         {
@@ -27,18 +39,6 @@ namespace SpoonCMS.Classes
             {
                 _items = value;
             }
-        } 
-
-        public Container()
-        {
-            Active = true;
-            Created = DateTime.Now;
-            _items = new Dictionary<string, ContentItem>();
-        }
-
-        public Container(string Name) : this()
-        {
-            this.Name = Name;
         }
 
         /// <summary>
@@ -75,6 +75,7 @@ namespace SpoonCMS.Classes
             }
         }
 
+        //TODO: Refactor to GetFirstItem() because for the client the method name does not describe what it does.
         /// <summary>
         /// Get the first item stored in the collection
         /// </summary>
