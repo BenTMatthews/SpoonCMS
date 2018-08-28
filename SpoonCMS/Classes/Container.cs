@@ -12,7 +12,7 @@ namespace SpoonCMS.Classes
         [JsonProperty("Items")]
         private Dictionary<string, ContentItem> _items { get; set; }
         public int Id { get; set; }
-        public bool Active { get; set; } 
+        public bool Active { get; set; }
         public DateTime Created { get; }
         public string Name { get; set; }
 
@@ -49,13 +49,15 @@ namespace SpoonCMS.Classes
         {
             try
             {
-                if (_items.Count >= _maxCount) {
+                if (_items.Count >= _maxCount)
+                {
                     throw new CountExceededException("Containers cannot exceed " + _maxCount + " items");
                 }
 
                 _items.Add(item.Name, item);
             }
-            catch (Exception) {
+            catch (Exception)
+            {
                 throw;
             }
         }
@@ -67,10 +69,12 @@ namespace SpoonCMS.Classes
         /// <returns>Item matching the name provided</returns>
         public ContentItem GetItem(string itemName)
         {
-            if (_items.ContainsKey(itemName)) {
+            if (_items.ContainsKey(itemName))
+            {
                 return _items[itemName];
             }
-            else {
+            else
+            {
                 return new NotFoundContentItem();
             }
         }
@@ -82,12 +86,14 @@ namespace SpoonCMS.Classes
         /// <returns>first item stored in the collection</returns>
         public ContentItem GetItem()
         {
-            if (Items.Any()) {
+            if (Items.Any())
+            {
                 return Items.First().Value;
             }
-            else {
+            else
+            {
                 return new NotFoundContentItem();
-            }        
+            }
         }
 
         /// <summary>
@@ -106,7 +112,8 @@ namespace SpoonCMS.Classes
         /// <param name="itemName">Name of the item to remove</param>
         public void RemoveItem(string itemName)
         {
-            if (_items.ContainsKey(itemName)) {
+            if (_items.ContainsKey(itemName))
+            {
                 _items.Remove(itemName);
             }
         }
