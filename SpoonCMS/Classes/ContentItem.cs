@@ -9,21 +9,25 @@ namespace SpoonCMS.Classes
     {
         public Guid Id { get; set; }
         public string Value { get; set; }
-        public bool Active { get; set; } = true;
-        public DateTime BeginDate { get; set; } = DateTime.MinValue;
-        public DateTime EndDate { get; set; } = DateTime.MaxValue;
-        public DateTime Created { get; } = DateTime.Now;
+        public bool Active { get; set; } 
+        public DateTime BeginDate { get; set; }
+        public DateTime EndDate { get; set; } 
+        public DateTime Created { get; } 
         public String Name { get; set; }
-        public int Priority { get; set; } = 0;
+        public int Priority { get; set; }
 
         public ContentItem()
         {
             Id = Guid.NewGuid();
+            Active = true;  
+            BeginDate = DateTime.MinValue;
+            EndDate = DateTime.MaxValue;
+            Created = DateTime.Now;
+            Priority = 0;
         }
 
-        public ContentItem(string name)
+        public ContentItem(string name) : this()
         {
-            Id = Guid.NewGuid();
             Name = name;
         }
     }
