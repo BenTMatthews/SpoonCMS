@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using SpoonCMS.Classes;
-using SpoonCMS.DataClasses;
-using SpoonCMS.Interfaces;
+using SpoonCMSCore.Classes;
+using SpoonCMSCore.DataClasses;
+using SpoonCMSCore.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,18 +15,18 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using static SpoonCMS.DataClasses.Enums;
+using static SpoonCMSCore.DataClasses.Enums;
 
-namespace SpoonCMS.Workers
+namespace SpoonCMSCore.Workers
 {
     public static class SpoonWebWorker
     {
-        private static string _htmlPath = "SpoonCMS.Files.Admin.html";
-        private static string _jsPath = "SpoonCMS.Files.Script.js";
-        private static string _cssPath = "SpoonCMS.Files.Styles.css";
-        private static string _containerListTemplatePath = "SpoonCMS.Files.Templates.ContainerList.hbs";
-        private static string _containerDetailsTemplatePath = "SpoonCMS.Files.Templates.ContainerDetails.hbs";
-        private static string _iconPath = "SpoonCMS.Files.Icon.jpg";
+        private static string _htmlPath = "SpoonCMSCore.Files.Admin.html";
+        private static string _jsPath = "SpoonCMSCore.Files.Script.js";
+        private static string _cssPath = "SpoonCMSCore.Files.Styles.css";
+        private static string _containerListTemplatePath = "SpoonCMSCore.Files.Templates.ContainerList.hbs";
+        private static string _containerDetailsTemplatePath = "SpoonCMSCore.Files.Templates.ContainerDetails.hbs";
+        private static string _iconPath = "SpoonCMSCore.Files.Icon.jpg";
 
         private static string _jsMarker = "[!CustomScriptBlock!]";
         private static string _cssMarker = "[!CustomStyleBlock!]";
@@ -42,11 +42,12 @@ namespace SpoonCMS.Workers
 
         public static ISpoonData GenerateDataWorker(SpoonDBType dbType, string connString)
         {
-            ISpoonData dataWorker;
+            ISpoonData dataWorker = null; ;
 
             switch (dbType)
             {
                 case SpoonDBType.LiteDB:
+                    //TODO: Fix litedb reference
                     dataWorker = new LiteDBData(connString);
                     break;
 

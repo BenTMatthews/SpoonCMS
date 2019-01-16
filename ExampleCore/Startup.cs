@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SpoonCMS.DataClasses;
-using SpoonCMS.Interfaces;
-using SpoonCMS.Workers;
+using SpoonCMSCore.Interfaces;
+using SpoonCMSCore.Workers;
 using System.Collections.Generic;
 using System.Security.Claims;
-using static SpoonCMS.DataClasses.Enums;
+using static SpoonCMSCore.DataClasses.Enums;
 
 namespace ExampleCore
 {

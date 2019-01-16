@@ -1,10 +1,10 @@
-﻿using SpoonCMS.Interfaces;
+﻿using SpoonCMSCore.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SpoonCMS.Classes
+namespace SpoonCMSCore.Classes
 {
     public class FileItem : IItem
     {

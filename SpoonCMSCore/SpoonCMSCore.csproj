@@ -19,6 +19,7 @@
     <FileVersion>1.0.1.2</FileVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,8 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteDB" Version="4.1.4" />
-    <PackageReference Include="Marten" Version="2.9.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization.Policy" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.1.0" />

@@ -1,9 +1,9 @@
-﻿using SpoonCMS.Interfaces;
+﻿using SpoonCMSCore.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SpoonCMS.Classes
+namespace SpoonCMSCore.Classes
 {
     public class ContentItem 
     {
@@ -26,9 +26,18 @@ namespace SpoonCMS.Classes
             Priority = 0;
         }
 
-        public ContentItem(string name) : this()
+        public ContentItem(string name, string value = default) : this()
         {
+            Value = value;
             Name = name;
         }
+
+        //For creating default instance of the class
+        public static readonly ContentItem Default = new ContentItem()
+        {
+            Id = Guid.Empty,
+            Value = "Content Item not found",            
+            Name = "NOT FOUND"
+        };
     }
 }

@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
-using SpoonCMS.Exceptions;
+using SpoonCMSCore.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SpoonCMS.Classes
+namespace SpoonCMSCore.Classes
 {
     public class Container
     {
@@ -75,7 +75,8 @@ namespace SpoonCMS.Classes
             }
             else
             {
-                return new NotFoundContentItem();
+                //Returning default values
+                return ContentItem.Default;
             }
         }
 
@@ -92,7 +93,8 @@ namespace SpoonCMS.Classes
             }
             else
             {
-                return new NotFoundContentItem();
+                //Returning default values
+                return ContentItem.Default;
             }
         }
 

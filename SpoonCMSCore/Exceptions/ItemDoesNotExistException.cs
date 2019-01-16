@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SpoonCMS.Exceptions
+namespace SpoonCMSCore.Exceptions
 {
     public class ItemDoesNotExistException : Exception
     {

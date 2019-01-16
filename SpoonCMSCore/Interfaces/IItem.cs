@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SpoonCMS.Interfaces
+namespace SpoonCMSCore.Interfaces
 {
     public interface IItem
     {

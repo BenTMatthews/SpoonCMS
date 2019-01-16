@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>ExampleCore</AssemblyName>
     <RootNamespace>ExampleCore</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.7" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.7" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,7 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SpoonCMS\SpoonCMS.csproj" />
+    <ProjectReference Include="..\DataLayerProjects\LiteDBDataLayer\LiteDBDataLayer.csproj" />
+    <ProjectReference Include="..\DataLayerProjects\PostgresDataLayer\PostgresDataLayer.csproj" />
   </ItemGroup>
 
 </Project>

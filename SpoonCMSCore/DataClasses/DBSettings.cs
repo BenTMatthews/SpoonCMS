@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SpoonCMS.DataClasses
+namespace SpoonCMSCore.DataClasses
 {
     //For future proofing and config when we have other data providers.
     public class DBSettings

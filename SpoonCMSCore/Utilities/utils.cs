@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SpoonCMS.Utilities
+namespace SpoonCMSCore.Utilities
 {
     static class utils
     {

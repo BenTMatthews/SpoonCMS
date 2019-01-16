@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SpoonCMS.Workers;
+using SpoonCMSCore.Workers;
 
 
 namespace ExampleCore.Controllers

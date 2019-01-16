@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SpoonCMS.DataClasses
+namespace SpoonCMSCore.DataClasses
 {
     public class Enums
     {
