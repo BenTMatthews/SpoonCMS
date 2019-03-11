@@ -40,28 +40,34 @@ namespace SpoonCMSCore.Workers
 
         #region DataGeneration
 
-        public static ISpoonData GenerateDataWorker(SpoonDBType dbType, string connString)
-        {
-            ISpoonData dataWorker = null; ;
+        /// <summary>
+        /// Deprecated
+        /// </summary>
+        /// <param name="dbType"></param>
+        /// <param name="connString"></param>
+        /// <returns></returns>
+        //public static ISpoonData GenerateDataWorker(SpoonDBType dbType, string connString)
+        //{
+        //    ISpoonData dataWorker = null; ;
 
-            switch (dbType)
-            {
-                case SpoonDBType.LiteDB:
-                    //TODO: Fix litedb reference
-                    dataWorker = new LiteDBData(connString);
-                    break;
+        //    switch (dbType)
+        //    {
+        //        case SpoonDBType.LiteDB:
+        //            //TODO: Fix litedb reference
+        //            dataWorker = new LiteDBData(connString);
+        //            break;
 
-                case SpoonDBType.PostGres:
-                    dataWorker = new PostGresData(connString);
-                    break;
+        //        case SpoonDBType.PostGres:
+        //            dataWorker = new PostGresData(connString);
+        //            break;
 
-                default:
-                    dataWorker = new LiteDBData();
-                    break;
-            }
+        //        default:
+        //            dataWorker = new LiteDBData();
+        //            break;
+        //    }
 
-            return dataWorker;
-        }
+        //    return dataWorker;
+        //}
 
         #endregion
 
@@ -409,7 +415,7 @@ namespace SpoonCMSCore.Workers
                 string itemKey = con.Items.FirstOrDefault(x => x.Value.Id == postedContent.Id).Key; //See if exists
                 if(!string.IsNullOrEmpty(itemKey))
                 {
-                    con.RemoveItem(itemKey); // just remove the esisting item we are replacing.
+                    con.RemoveItem(itemKey); // just remove the existing item we are replacing.
                 }
 
                 con.AddItem(postedContent);

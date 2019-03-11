@@ -35,12 +35,12 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '#containerList .containerItem i.deleteContainer', function (e) {
-        if (confirm("Are you sure you want to delete this container and all items?") == true) {
+        if (confirm("Are you sure you want to delete this container and all items?") === true) {
             let name = $(this).attr("data-container-name");
             DeleteContainer(name);
         }
         else {
-
+            return;
         }
     });
 
@@ -52,7 +52,7 @@ $(document).ready(function () {
         let conId = $(this).attr("data-container-id");
         let container = BuildContainer(conId);
 
-        if (container != false) {
+        if (container !== false) {
             SaveContainer(conId, container);
         }
     });
@@ -74,16 +74,16 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '#containerItems .addItem', function (e) {
-        AddItemToContainer();
+        AddItemToContainer($(this).attr("data-container-id"));
     });
 
     $(document).on('click', '#containerDetailsAttributes .contentDetailsBlock .contentName .deleteItemBlock i.deleteItem', function (e) {
-        if (confirm("Are you sure you want to delete this item from the container?") == true) {
+        if (confirm("Are you sure you want to delete this item from the container?") === true) {
             let contentId = $(this).attr("data-item-id");
             RemoveItemFromContainer(contentId);
         }
         else {
-
+            return;
         }
     });
 
@@ -165,7 +165,7 @@ $(document).ready(function () {
 
 //GENERAL FUNCTIONS
 
-function AddItemToContainer() {
+function AddItemToContainer(conId) {
     let itemEditor = $("#contentDetails-partial").html();
     let itemEditorTemplate = Handlebars.compile(itemEditor);
 
@@ -175,6 +175,7 @@ function AddItemToContainer() {
     let itemObj = {};
     itemObj.Name = "New Item";
     itemObj.Id = Guid();
+    itemObj.ConId = conId;
     itemObj.value = "";
 
     let htmlEditor = itemEditorTemplate(itemObj);
@@ -188,10 +189,9 @@ function AddItemToContainer() {
     $("#containerItems").append(htmlBlock);
 
     //Do some cleanup since we don't have @root in partials, get container level data in 
-    let conId = $(this).attr("data-container-id");
     let conName = $("#containerList .containerItem[data-container-id='" + conId + "']").first().text();
     $(".contentDetailsBlock[data-item-id='" + itemObj.Id + "'] .contentName .containerName").text(conName);
-    $(".contentDetailsBlock[data-item-id='" + itemObj.Id + "'] .contentSaveBlock button.saveItem").attr("data-container-id", conId);
+    //$(".contentDetailsBlock[data-item-id='" + itemObj.Id + "'] .contentSaveBlock button.saveItem").attr("data-container-id", conId);
 
     UpdatePriorityCounts();
 
@@ -209,7 +209,7 @@ function UpdateItemName(itemId) {
     let newName = $('#dialog-itemName #formItemName').val();
 
     $(".contentDetailsBlock[data-item-id='" + itemId + "'] .contentName .containerItemName").first().text(newName);
-    $("#containerItems .itemBlock[data-item-id='" + itemId + "'] .itemContentBlock").first().text(newName)
+    $("#containerItems .itemBlock[data-item-id='" + itemId + "'] .itemContentBlock").first().text(newName);
 
     $.modal.close();
 

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SpoonCMSCore.Interfaces;
+using SpoonCMSCore.LiteDBDatalayer;
+using SpoonCMSCore.PostGresData;
 using SpoonCMSCore.Workers;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -23,21 +25,21 @@ namespace ExampleCore
         public void ConfigureServices(IServiceCollection services)
         {
             // LiteDB path to store file, for instance: "Data\\Spoon\\"   
-            string connString = "Data\\Spoon\\";
-            ISpoonData spoonData = SpoonWebWorker.GenerateDataWorker(SpoonDBType.LiteDB, connString);
+            string connStringLDB = "Data\\Spoon\\";
+            LiteDBData spoonDataLDB = new LiteDBData(connStringLDB);
 
             //Postgres DB connection string, for instance: "database=xxxx; host=xxx.xxx.xxx.xxx.com; username=xxx; password=xxx; SslMode=Prefer; port=1234;"
-            //string connString = Configuration["PostGresDBSettings:ConnectionString"];
-            //ISpoonData spoonData = SpoonWebWorker.GenerateDataWorker(SpoonDBType.PostGres, connString);
+            string connStringPG = "database=xxxx; host=xxx.xxx.xxx.xxx.com; username=xxx; password=xxx; SslMode=Prefer; port=1234;";
+            PostGresData spoonDataPG = new PostGresData(connStringPG);
 
             SpoonWebWorker.AdminPath = "/adminControl";
-            SpoonWebWorker.SpoonData = spoonData;
+            SpoonWebWorker.SpoonData = spoonDataLDB;
 
             //Will need to have some sort of user management system for this to work
             SpoonWebWorker.RequireAuth = false;
             SpoonWebWorker.AuthClaims = new List<Claim>() { new Claim(ClaimTypes.Role, "admins"), new Claim(ClaimTypes.Name, "John") };
 
-            services.AddSingleton<ISpoonData>(spoonData);
+            services.AddSingleton<ISpoonData>(SpoonWebWorker.SpoonData);
             services.AddMvc();
         }
 
