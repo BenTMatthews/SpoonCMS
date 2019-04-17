@@ -34,12 +34,13 @@ namespace ExampleCore
 
             SpoonWebWorker.AdminPath = "/adminControl";
             SpoonWebWorker.SpoonData = spoonDataLDB;
+            //SpoonWebWorker.SpoonData = spoonDataPG;
 
             //Will need to have some sort of user management system for this to work
             SpoonWebWorker.RequireAuth = false;
             SpoonWebWorker.AuthClaims = new List<Claim>() { new Claim(ClaimTypes.Role, "admins"), new Claim(ClaimTypes.Name, "John") };
 
-            services.AddSingleton<ISpoonData>(SpoonWebWorker.SpoonData);
+            services.AddSingleton(SpoonWebWorker.SpoonData);
             services.AddMvc();
         }
 

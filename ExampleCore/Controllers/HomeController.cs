@@ -1,10 +1,9 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using ExampleCore.Models;
-using SpoonCMSCore.Workers;
-using SpoonCMSCore.Interfaces;
-using SpoonCMSCore.Classes;
+﻿using ExampleCore.Models;
 using ExampleCore.ViewModel;
+using Microsoft.AspNetCore.Mvc;
+using SpoonCMSCore.Classes;
+using SpoonCMSCore.Interfaces;
+using System.Diagnostics;
 
 namespace ExampleCore.Controllers
 {
