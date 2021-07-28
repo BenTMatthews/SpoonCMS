@@ -77,12 +77,12 @@ namespace SpoonCMSCore.Workers
         {
             app.Run(async context =>
             {
-                string resp = GenerateResponseString(context);
+                string resp = await GenerateResponseString(context);
                 await context.Response.WriteAsync(resp);
             });
         }
 
-        public static string GenerateResponseString(HttpContext context, bool fromController = false)
+        public static async Task<string> GenerateResponseString(HttpContext context, bool fromController = false)
         {
             string response;
             string path;
@@ -111,7 +111,7 @@ namespace SpoonCMSCore.Workers
                                     ServiceResponse<List<ContainerSkinny>> respConsSkinny = new ServiceResponse<List<ContainerSkinny>>();
                                     try
                                     {
-                                        respConsSkinny = GetContainers();
+                                        respConsSkinny = await GetContainers();
                                     }
                                     catch (Exception ex)
                                     {
@@ -124,7 +124,7 @@ namespace SpoonCMSCore.Workers
                                     ServiceResponse<Container> respCon = new ServiceResponse<Container>();
                                     try
                                     {
-                                        respCon = GetContainer(context);
+                                        respCon = await GetContainer(context);
                                     }
                                     catch (Exception ex)
                                     {
@@ -154,7 +154,7 @@ namespace SpoonCMSCore.Workers
                                     ServiceResponse<string> respSave = new ServiceResponse<string>();
                                     try
                                     {
-                                        respSave = SaveContainer(context);
+                                        respSave = await SaveContainer(context);
                                     }
                                     catch (Exception ex)
                                     {
@@ -168,7 +168,7 @@ namespace SpoonCMSCore.Workers
                                     ServiceResponse<string> respContentSave = new ServiceResponse<string>();
                                     try
                                     {
-                                        respContentSave = SaveContentItem(context);
+                                        respContentSave = await SaveContentItem(context);
                                     }
                                     catch (Exception ex)
                                     {
@@ -182,7 +182,7 @@ namespace SpoonCMSCore.Workers
                                     ServiceResponse<string> respCreate = new ServiceResponse<string>();
                                     try
                                     {
-                                        respCreate = CreateContainer(context);
+                                        respCreate = await CreateContainer(context);
                                     }
                                     catch (Exception ex)
                                     {
@@ -196,7 +196,7 @@ namespace SpoonCMSCore.Workers
                                     ServiceResponse<string> respEditName = new ServiceResponse<string>();
                                     try
                                     {
-                                        respEditName = EditContainerName(context);
+                                        respEditName = await EditContainerName(context);
                                     }
                                     catch (Exception ex)
                                     {
@@ -210,7 +210,7 @@ namespace SpoonCMSCore.Workers
                                     ServiceResponse<string> respDelete = new ServiceResponse<string>();
                                     try
                                     {
-                                        respDelete = DeleteContainer(context);
+                                        respDelete = await DeleteContainer(context);
                                     }
                                     catch (Exception ex)
                                     {
@@ -312,7 +312,7 @@ namespace SpoonCMSCore.Workers
 
         #region PageOperations
 
-        private static ServiceResponse<List<ContainerSkinny>> GetContainers()
+        private static async Task<ServiceResponse<List<ContainerSkinny>>> GetContainers()
         {
             ServiceResponse<List<ContainerSkinny>> respConsSkinny = new ServiceResponse<List<ContainerSkinny>>();
             respConsSkinny.Data = SpoonData.GetAllContainers();
@@ -322,7 +322,7 @@ namespace SpoonCMSCore.Workers
             return respConsSkinny;
         }
 
-        private static ServiceResponse<Container> GetContainer(HttpContext context)
+        private static async Task<ServiceResponse<Container>> GetContainer(HttpContext context)
         {
             ServiceResponse<Container> respCon = new ServiceResponse<Container>();
             int id;
@@ -345,7 +345,7 @@ namespace SpoonCMSCore.Workers
             return respCon;
         }
 
-        private static ServiceResponse<string> SaveContainer(HttpContext context)
+        private static async Task<ServiceResponse<string>> SaveContainer(HttpContext context)
         {
             ServiceResponse<string> respSave = new ServiceResponse<string>();
             int id;
@@ -357,7 +357,7 @@ namespace SpoonCMSCore.Workers
                 string containerString;
                 using (StreamReader reader = new StreamReader(context.Request.Body))
                 {
-                    containerString = reader.ReadToEnd();
+                    containerString = await reader.ReadToEndAsync();
                 }
 
                 Container postedCon = JsonConvert.DeserializeObject<Container>(containerString, settings);
@@ -393,7 +393,7 @@ namespace SpoonCMSCore.Workers
             return respSave;
         }
 
-        private static ServiceResponse<string> SaveContentItem(HttpContext context)
+        private static async Task<ServiceResponse<string>> SaveContentItem(HttpContext context)
         {
             ServiceResponse<string> respSave = new ServiceResponse<string>();
             int id;
@@ -405,7 +405,7 @@ namespace SpoonCMSCore.Workers
                 string contentString;
                 using (StreamReader reader = new StreamReader(context.Request.Body))
                 {
-                    contentString = reader.ReadToEnd();
+                    contentString = await reader.ReadToEndAsync();
                 }
 
                 ContentItem postedContent = JsonConvert.DeserializeObject<ContentItem>(contentString, settings);
@@ -436,7 +436,7 @@ namespace SpoonCMSCore.Workers
             return respSave;
         }
 
-        private static ServiceResponse<string> CreateContainer(HttpContext context)
+        private static async Task<ServiceResponse<string>> CreateContainer(HttpContext context)
         {
             ServiceResponse<string> respCreate = new ServiceResponse<string>();
             string conName = context.Request.Query["name"];
@@ -459,7 +459,7 @@ namespace SpoonCMSCore.Workers
             return respCreate;
         }
 
-        private static ServiceResponse<string> EditContainerName(HttpContext context)
+        private static async Task<ServiceResponse<string>> EditContainerName(HttpContext context)
         {
             ServiceResponse<string> respEditName = new ServiceResponse<string>();
             string conName = context.Request.Query["name"];
@@ -483,7 +483,7 @@ namespace SpoonCMSCore.Workers
             return respEditName;
         }
 
-        private static ServiceResponse<string> DeleteContainer(HttpContext context)
+        private static async Task<ServiceResponse<string>> DeleteContainer(HttpContext context)
         {
             ServiceResponse<string> respDelete = new ServiceResponse<string>();
             string conName = context.Request.Query["name"];

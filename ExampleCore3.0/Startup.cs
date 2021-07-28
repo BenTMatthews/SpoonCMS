@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +9,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SpoonCMSCore.LiteDBDatalayer;
+using SpoonCMSCore.PostGresData;
+using SpoonCMSCore.Workers;
 
 namespace ExampleCore3._0
 {
@@ -23,6 +27,24 @@ namespace ExampleCore3._0
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // LiteDB path to store file, for instance: "Data\\Spoon\\"   
+            string connStringLDB = "Data\\Spoon\\";
+            LiteDBData spoonDataLDB = new LiteDBData(connStringLDB);
+
+            //Postgres DB connection string, for instance: "database=xxxx; host=xxx.xxx.xxx.xxx.com; username=xxx; password=xxx; SslMode=Prefer; port=1234;"
+            string connStringPG = "database=xxxx; host=xxx.xxx.xxx.xxx.com; username=xxx; password=xxx; SslMode=Prefer; port=1234;";
+            PostGresData spoonDataPG = new PostGresData(connStringPG);
+
+            SpoonWebWorker.AdminPath = "/adminControl";
+            SpoonWebWorker.SpoonData = spoonDataLDB;
+            //SpoonWebWorker.SpoonData = spoonDataPG;
+
+            //Will need to have some sort of user management system for this to work
+            SpoonWebWorker.RequireAuth = false;
+            SpoonWebWorker.AuthClaims = new List<Claim>() { new Claim(ClaimTypes.Role, "admins"), new Claim(ClaimTypes.Name, "John") };
+
+            services.AddSingleton(SpoonWebWorker.SpoonData);
+
             services.AddControllersWithViews();
         }
 
@@ -40,6 +62,9 @@ namespace ExampleCore3._0
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
+            app.Map(SpoonWebWorker.AdminPath, SpoonWebWorker.BuildAdminPageDelegate);
+
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -51,6 +76,12 @@ namespace ExampleCore3._0
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "Custom",
+                    pattern: "{*AllValues}",
+                    defaults: new { controller = "Custom", action = "CustomAction" });
+
             });
         }
     }
