@@ -3,12 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleCore", "ExampleCore\ExampleCore.csproj", "{31C67066-DCCF-45A9-9FC3-1EB2A4F5E703}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7562A24A-FE8C-4703-9EC8-1513677DC1EA} = {7562A24A-FE8C-4703-9EC8-1513677DC1EA}
-		{096FBAB2-9028-4C73-BA19-09C1922B75BF} = {096FBAB2-9028-4C73-BA19-09C1922B75BF}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9389C868-71D4-410C-B645-CE115C30B756}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpoonCMSTests", "SpoonCMSTests\SpoonCMSTests.csproj", "{096FBAB2-9028-4C73-BA19-09C1922B75BF}"
@@ -29,10 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{31C67066-DCCF-45A9-9FC3-1EB2A4F5E703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31C67066-DCCF-45A9-9FC3-1EB2A4F5E703}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31C67066-DCCF-45A9-9FC3-1EB2A4F5E703}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31C67066-DCCF-45A9-9FC3-1EB2A4F5E703}.Release|Any CPU.Build.0 = Release|Any CPU
 		{096FBAB2-9028-4C73-BA19-09C1922B75BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{096FBAB2-9028-4C73-BA19-09C1922B75BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{096FBAB2-9028-4C73-BA19-09C1922B75BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
