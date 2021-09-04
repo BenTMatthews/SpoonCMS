@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SpoonCMSCore.Workers;
-
+using System.Threading.Tasks;
 
 namespace ExampleCore.Controllers
 {
     public class SpoonController : Controller
     {
-        public IActionResult Admin()
+        public async Task<IActionResult> Admin()
         {
-            return Content(SpoonWebWorker.GenerateResponseString(Request.HttpContext, true), "text/html");
+            return Content(await SpoonWebWorker.GenerateResponseString(Request.HttpContext, true), "text/html");
         }
     }
 }

@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>ExampleCore3._1</RootNamespace>
-    <AssemblyName>ExampleCore3.1</AssemblyName>
+    <RootNamespace>ExampleCore5.0</RootNamespace>
+    <AssemblyName>ExampleCore5.0</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

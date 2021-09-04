@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataLayers", "DataLayers", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgresDataLayer", "DataLayerProjects\PostgresDataLayer\PostgresDataLayer.csproj", "{35A8AF1A-CEF5-4BC1-AC41-F37A370D5B4A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleCore3.1", "ExampleCore3.0\ExampleCore3.1.csproj", "{6A837E06-F210-47BF-AB75-6A8F443105C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleCore5.0", "ExampleCore3.0\ExampleCore5.0.csproj", "{6A837E06-F210-47BF-AB75-6A8F443105C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
