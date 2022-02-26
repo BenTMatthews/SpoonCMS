@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29424.173
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9389C868-71D4-410C-B645-CE115C30B756}"
 EndProject
@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataLayers", "DataLayers", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgresDataLayer", "DataLayerProjects\PostgresDataLayer\PostgresDataLayer.csproj", "{35A8AF1A-CEF5-4BC1-AC41-F37A370D5B4A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleCore5.0", "ExampleCore3.0\ExampleCore5.0.csproj", "{6A837E06-F210-47BF-AB75-6A8F443105C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleCore6.0", "ExampleCore3.0\ExampleCore6.0.csproj", "{6A837E06-F210-47BF-AB75-6A8F443105C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,6 +5,7 @@ using System.IO;
 using SpoonCMSCore.Classes;
 using SpoonCMSCore.Exceptions;
 using SpoonCMSCore.Interfaces;
+using SpoonCMSCore.Utilities;
 
 namespace SpoonCMSCore.LiteDBDatalayer
 {
@@ -65,11 +66,10 @@ namespace SpoonCMSCore.LiteDBDatalayer
                     }
                     else
                     {
-                        existingCon.Name = container.Name;
-                        existingCon.Active = container.Active;
-                        existingCon.Items = container.Items;
 
-                        containers.Update(container);
+                        Utils.UpdateContainer(existingCon, container);
+
+                        containers.Update(existingCon);
                         containers.EnsureIndex(x => x.Name);
                     }                    
                 }
@@ -144,10 +144,7 @@ namespace SpoonCMSCore.LiteDBDatalayer
                     {
                         if (container.Items.ContainsKey(item.Name))
                         {
-                            container.Items[item.Name].Active = item.Active;
-                            container.Items[item.Name].BeginDate = item.BeginDate;
-                            container.Items[item.Name].EndDate = item.EndDate;
-                            container.Items[item.Name].Value = item.Value;
+                            container.Items[item.Name] = Utils.UpdateContentItem(container.Items[item.Name], item);                        
 
                             containers.Update(container);
                         }

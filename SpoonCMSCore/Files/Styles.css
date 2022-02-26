@@ -165,16 +165,17 @@
 
             #containerDetails #containerDetailsAttributes .contentDetailsBlock .contentSaveBlock {
                 background-color: white;
-                text-align: right;
                 border-right: 10px #485869 solid;
                 border-left: 10px #485869 solid;
                 border-bottom: 10px #485869 solid;
                 height: 30px;
                 padding-top: 5px;
                 padding-right: 5px;
+                display: flex;
+                justify-content: space-between;
             }
 
-                #containerDetails #containerDetailsAttributes .contentDetailsBlock .contentSaveBlock i.saveItem {
+                #containerDetails #containerDetailsAttributes .contentDetailsBlock .contentSaveBlock i.actionIcon {
                     background-color: transparent;
                     color: orange;
                     font-size: 1.4em;
@@ -284,6 +285,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.disabled {
+    color: darkgray !important;
+    pointer-events: none;
 }
 
 

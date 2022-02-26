@@ -50,9 +50,11 @@
         </div>
         <div class="contentSaveBlock">
             {{#if ConId}}
-            <i class="fa fa-floppy-o saveItem" aria-hidden="true" data-item-id="{{Id}}" data-container-id="{{ConId}}"></i>
+            <i class="fa fa-history contentHistory actionIcon disabled" title="History not available" aria-hidden="true" data-item-id="{{Id}}" data-container-id="{{ConId}}"></i>
+            <i class="fa fa-floppy-o saveItem actionIcon" aria-hidden="true" title="Save Item" data-item-id="{{Id}}" data-container-id="{{ConId}}"></i>
             {{else}}
-            <i class="fa fa-floppy-o saveItem" aria-hidden="true" data-item-id="{{Id}}" data-container-id="{{@root.Id}}"></i>
+            <i class="fa fa-history contentHistory actionIcon" aria-hidden="true" title="View item history" data-item-id="{{Id}}" data-container-id="{{@root.Id}}"></i>
+            <i class="fa fa-floppy-o saveItem actionIcon" aria-hidden="true" title="Save Item" data-item-id="{{Id}}" data-container-id="{{@root.Id}}"></i>
             {{/if}}
 
         </div>

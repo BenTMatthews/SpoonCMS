@@ -159,6 +159,9 @@ namespace SpoonCMSCore.PostGresData
                             container.Items[item.Name].EndDate = item.EndDate;
                             container.Items[item.Name].Value = item.Value;
 
+                            //Why was I not doing this before? Did I miss it or is there a reason?
+                            container.Items[item.Name].Priority = item.Priority;
+
                             session.Update<Container>(container);
                             session.SaveChanges();
                         }

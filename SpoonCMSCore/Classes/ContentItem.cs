@@ -15,6 +15,7 @@ namespace SpoonCMSCore.Classes
         public DateTime Created { get; } 
         public String Name { get; set; }
         public int Priority { get; set; }
+        public LimitedList<ContentValueHistory> History { get; set; }
 
         public ContentItem()
         {

@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>1.0.1.2</Version>
     <Authors>Ben Matthews</Authors>
     <Company />
     <Description>Lightweight page content management</Description>
     <RepositoryUrl>https://github.com/BenTMatthews/SpoonCMS</RepositoryUrl>
-    <RepositoryType>Github</RepositoryType>
-    <PackageTags>CMS, .Net Core</PackageTags>
+    <RepositoryType></RepositoryType>
+    <PackageTags>CMS; .Net Core; spooncms</PackageTags>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageReleaseNotes>Release Notes:
 
@@ -44,6 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Diff.Match.Patch" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization.Policy" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.1.0" />
@@ -51,6 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Properties\" />
     <Folder Include="Tasks\" />
   </ItemGroup>
 
