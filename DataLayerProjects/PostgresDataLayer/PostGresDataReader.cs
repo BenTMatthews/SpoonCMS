@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Marten;
 using Marten.Services;
 using System.Linq;
+using Weasel.Postgresql;
+using Weasel.Core;
 
 namespace SpoonCMSCore.PostGresData
 {

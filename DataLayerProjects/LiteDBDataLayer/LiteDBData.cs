@@ -87,7 +87,10 @@ namespace SpoonCMSCore.LiteDBDatalayer
                 using (var db = new LiteDatabase(_connString))
                 {
                     var containers = db.GetCollection<Container>("Containers");
-                    containers.Delete((Query.EQ("Name", conName)));
+                    Container container = containers.FindOne(x => x.Name.Equals(conName));
+                    containers.Delete(container.Id);
+                    containers.EnsureIndex(x => x.Name);
+
                 }
             }
             catch(Exception)

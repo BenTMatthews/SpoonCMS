@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgresDataLayer", "DataLa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleCore6.0", "ExampleCore3.0\ExampleCore6.0.csproj", "{6A837E06-F210-47BF-AB75-6A8F443105C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpoonAdmin", "SpoonAdmin\SpoonAdmin.csproj", "{CFDD455E-8AD7-485C-9F75-9D2399ECF4BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{6A837E06-F210-47BF-AB75-6A8F443105C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A837E06-F210-47BF-AB75-6A8F443105C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A837E06-F210-47BF-AB75-6A8F443105C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFDD455E-8AD7-485C-9F75-9D2399ECF4BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFDD455E-8AD7-485C-9F75-9D2399ECF4BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFDD455E-8AD7-485C-9F75-9D2399ECF4BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFDD455E-8AD7-485C-9F75-9D2399ECF4BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
